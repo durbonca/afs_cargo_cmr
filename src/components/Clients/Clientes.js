@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useDBContext } from '../Config/DBProvider';
+import React from 'react';
 import { TableGrid } from '../Layout/TableGrid';
 
 export const Clientes = ()=>{

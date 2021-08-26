@@ -3,26 +3,21 @@ import { LinearProgress, TableContainer as TContainer, Table, TableBody as TBody
 import { Typography, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@material-ui/core';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
-import UpdateIcon from '@material-ui/icons/Update';
 import EditIcon from '@material-ui/icons/Edit';
-import DoneIcon from '@material-ui/icons/Done';
-import ClearIcon from '@material-ui/icons/Clear';
 import { appStyles } from '../Config/AppStyle';
 import { useDBContext } from '../Config/DBProvider';
 import uuid from 'react-uuid';
 
-
-
-const ConfirmButton = () => {
+/* const ConfirmButton = () => {
     const { btnIcon  } = appStyles();
     return (
         <IconButton key={uuid()} className={btnIcon} color="secondary" aria-label="Done" onClick={() => { alert('clicked Ok') }}>
             <DoneIcon />
         </IconButton>
     );
-}
+} */
 
-const CancelButton = () => {
+/* const CancelButton = () => {
     const { btnIcon  } = appStyles();
     const { handleCancelRow } = useDBContext();
 
@@ -31,7 +26,7 @@ const CancelButton = () => {
             <ClearIcon />
         </IconButton>
     );
-}
+} */
 
 
 const DeleteButton = () => {
