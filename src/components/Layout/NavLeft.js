@@ -14,7 +14,8 @@ export const NavLeft = () => {
     const headersData = [
                             { label: "Home", href: "/Home", icon: <HomeIcon/> },
                             { label: "Usuarios", href: "/users", icon: <LocalCafeIcon/>},
-                            { label: "Clientes", href: "/clients", icon: <PermIdentityIcon/>}
+                            { label: "Clientes", href: "/clients", icon: <PermIdentityIcon/>},
+                            { label: "Formulario Test", href: "/Form", icon: <PermIdentityIcon/>}
                         ];
 
     const getDrawerList = () => {

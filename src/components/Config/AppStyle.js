@@ -70,7 +70,7 @@ export const appStyles = makeStyles((theme) => ({
       display: 'flex',
       flexWrap: 'wrap',
       width: 400,
-      margin: `${theme.spacing(0)} auto`
+      //margin: `${theme.spacing(0)} auto`
     },
     btnLogin: {
       marginTop: theme.spacing(2),

@@ -10,6 +10,7 @@ import { Home } from "../Home/Home";
 import { Users } from "../Users/Users";
 import { Profile } from '../Users/Profile';
 import { Clientes } from '../Clients/Clientes';
+import { Formulario } from '../Form/';
 
 const Layout = () => {
      const {isAuth} = useDBContext();
@@ -43,6 +44,9 @@ const Layout = () => {
                                         </Route>
                                         <Route path="/Clients" exact>
                                              <Clientes/>
+                                        </Route>
+                                        <Route path="/Form" exact>
+                                             <Formulario/>
                                         </Route>
                                    </Switch>
                               </Page>
