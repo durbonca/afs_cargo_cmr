@@ -233,6 +233,7 @@ export const TableGrid = ({children,...props}) => {
         if(editRow){
             handleEditRow()
         }
+        // eslint-disable-next-line
     },[])
 
     return (

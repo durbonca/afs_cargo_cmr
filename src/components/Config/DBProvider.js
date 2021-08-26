@@ -133,6 +133,7 @@ export const DBProvider = ({children}) => {
 
     useEffect(() => {
         handleColumns(DataSet)
+        // eslint-disable-next-line
     },[DataSet])
 
     const handleColumns= () => {
@@ -193,6 +194,7 @@ export const DBProvider = ({children}) => {
             setDialogMode,
             handleIdRowSelected
         }
+        // eslint-disable-next-line
     },[ isAuth,email, password,
         drawerOpen, subProfile,
         DataSet, Columns, showIdCell, showbtnAdd, editRow, openDialog, DialogMode, idRowSelected ]);
