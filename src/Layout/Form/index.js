@@ -1,9 +1,10 @@
 import React from 'react';
-import { Container, TextField, Button } from '@material-ui/core';
+import { Container, Button } from '@material-ui/core';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import { invoiceSchema } from '../../schemas/invoiceData';
-import Item from '../../components/Item/';
-import Error from '../Error/';
+import { TextField } from '../../components/inputs'
+import Item from '../../components/Item';
+import Error from '../../components/Error';
 import { invoiceValidation } from '../../helpers/invoice';
 import styled from 'styled-components';
 
@@ -34,10 +35,9 @@ export function Formulario () {
                 <StyledForm>
                     <Item width="200">
                         <Field
-                            label="Nombre" 
-                            name="name" 
+                            label="Razon Social" 
+                            name="companyName" 
                             type="text"
-                            placeholder="Nombre" 
                             as={TextField}
                             />
                         <ErrorMessage component={Error} name="name" />
@@ -73,7 +73,7 @@ export function Formulario () {
                         <ErrorMessage component={Error} name="message" />
                     </Item>
                     <Item width="200">
-                        <Button style={{ marginTop: "40px" }} variant="contained" color="primary">Enviar</Button>
+                        <Button style={{ marginTop: "40px" }} variant="contained" color="primary">Guardar</Button>
                     </Item>
                 </StyledForm>
             </Formik>

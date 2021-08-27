@@ -2,15 +2,13 @@ import React from 'react';
 import { appStyles } from '../Config/AppStyle';
 import { useDBContext } from '../Config/DBProvider';
 import { Switch, Redirect, Route } from "react-router-dom";
-import { Login } from "../Users/Login";
 import { NavBar } from './NavBar';
 import { NavLeft } from "./NavLeft";
 import Page from './Page';
-import { Home } from "../Home/Home";
-import { Users } from "../Users/Users";
-import { Profile } from '../Users/Profile';
-import { Clientes } from '../Clients/Clientes';
-import { Formulario } from '../Form/';
+import { Home } from "./Home/Home";
+import { Users, Login, Profile } from "./Users";
+import { Clientes } from './Clients/Clientes';
+import { Formulario } from './Form/';
 
 const Layout = () => {
      const {isAuth} = useDBContext();
