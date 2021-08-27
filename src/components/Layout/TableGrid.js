@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { LinearProgress, TableContainer as TContainer, Table, TableBody as TBody, TableHead as THead ,TableRow, TableCell } from '@material-ui/core';
-import { Typography, Button, Box, IconButton, Dialog, DialogTitle, DialogContent, DialogActions, TextField } from '@material-ui/core';
+import { Typography, Button, Box, IconButton, Dialog, DialogContent } from '@material-ui/core';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import { appStyles } from '../Config/AppStyle';
 import { useDBContext } from '../Config/DBProvider';
 import uuid from 'react-uuid';
+import { Formulario } from '../Form'
+import CSVReader from "react-csv-reader";
 
 /* const ConfirmButton = () => {
     const { btnIcon  } = appStyles();
@@ -40,62 +42,17 @@ const DeleteButton = () => {
 }
 
 const DialogForm = () => {
-    const { handleCloseDialog, openDialog, DialogMode, idRowSelected } = useDBContext();
-    const [newData, setNewData] = useState({Cliente:null,Rut:null,Monto:null})
+    const { handleCloseDialog, openDialog } = useDBContext();
 
     const handleClose = () => {
         handleCloseDialog()
     };
 
-    console.log(idRowSelected)
-
-    const btnAction = (DialogMode === 'Add')? 'Agregar':'Actualizar';
-
-    const handleFormItemClick = () => {
-        console.log(newData);
-    };
-
-    const handleChangeName = (e) => setNewData((prevState) => ({ ...prevState, Cliente: e.target.value }));
-    const handleChangeRut = (e) => setNewData((prevState) => ({ ...prevState, Rut: e.target.value }));
-    const handleChangeMonto = (e) => setNewData((prevState) => ({ ...prevState, Monto: e.target.value }));
-
     return (
         <Dialog onClose={handleClose} aria-labelledby="simple-dialog-title" open={openDialog}>
-            <DialogTitle id="simple-dialog-title">Nuevo Cliente</DialogTitle>
             <DialogContent>
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="name"
-                    label="Nombre Cliente"
-                    type="text"
-                    fullWidth
-                    onChange={ handleChangeName }
-                />
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="rut"
-                    label="Rut Cliente"
-                    type="text"
-                    fullWidth
-                    onChange={ handleChangeRut }
-                />
-                <TextField
-                    autoFocus
-                    margin="dense"
-                    id="monto"
-                    label="Monto"
-                    type="text"
-                    fullWidth
-                    onChange={ handleChangeMonto }
-                />
-
+                <Formulario />
             </DialogContent>
-            <DialogActions>
-                <Button color="primary" onClick={() => handleFormItemClick('agregar')}>{btnAction}</Button>
-                <Button onClick={handleClose} color="primary">Cancelar</Button>
-            </DialogActions>
         </Dialog>
     )
 
@@ -169,10 +126,12 @@ const TableHead = () => {
 
     const Loading = () => {
         return (
-            <>
-                <Typography variant="caption" component="div" color="textSecondary">Cargando...</Typography>
-                <LinearProgress />
-            </>
+             <TableRow>
+                <TableCell>
+                    <Typography variant="caption" component="div" color="textSecondary">Cargando...</Typography>
+                    <LinearProgress />
+                </TableCell>
+            </TableRow>
         )
     }
 
@@ -185,17 +144,39 @@ const TableHead = () => {
 
 const TableContainer = ({children}) => {
     const { showbtnAdd, handleOpenDialog, setDialogMode } = useDBContext();
-    const { ContentRight, btnAddTableGrid  } = appStyles();
+    const { ContentRight, btnAddTableGrid, csvInput  } = appStyles();
 
     const handleOpenDialogAdd= () => {
         setDialogMode('Add');
         handleOpenDialog()
     }
 
+    const handleForce = (data, fileInfo) => console.log(data, fileInfo);
+
+    const CSVOptions = {
+        header: true,
+        dynamicTyping: true,
+        skipEmptyLines: true,
+        transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
+    };
+    const inputStyle = {
+       color: 'white',
+       background: 'green'
+    }
+
     return (
         <TContainer>
             <Box component="div" className={ContentRight}>
-                { showbtnAdd && <Button
+                { showbtnAdd &&
+                                <>
+                                <CSVReader
+                                    className={csvInput}
+                                    label="Cargar Archivo CSV"
+                                    onFileLoaded={handleForce}
+                                    parserOptions={CSVOptions}
+                                    inputStyle = {inputStyle}
+                                    />
+                                <Button
                                     variant="contained"
                                     color="primary"
                                     size="small"
@@ -204,7 +185,11 @@ const TableContainer = ({children}) => {
                                     onClick={handleOpenDialogAdd}
                                 >
                                     Agregar
-                                </Button> }
+                                </Button>
+
+
+                                </>
+                }
             </Box>
             {children}
         </TContainer>
@@ -212,7 +197,7 @@ const TableContainer = ({children}) => {
     )
 }
 
-export const TableGrid = ({children,...props}) => {
+export const TableGrid = ({...props}) => {
     const { getDataCollection,
             handleshowbtnAdd,
             handleshowIdCell,

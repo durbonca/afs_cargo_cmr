@@ -82,7 +82,7 @@ export const DBProvider = ({children}) => {
         //console.log('login');
         if(email && password){
             auth.signInWithEmailAndPassword(email, password)
-                .then((res) => {
+                .then(() => {
                     //console.log("Haciendo Login...");
                     //console.log(res);
                     if(isMountedRef.current){

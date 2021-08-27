@@ -25,6 +25,7 @@ export function Formulario () {
                 initialValues={invoiceSchema}
                 validationSchema={invoiceValidation}
                 onSubmit={(values, { setSubmitting }) => {
+                    console.log(values)
                     setTimeout(() => {
                     alert(JSON.stringify(values, null, 2));
                     setSubmitting(false);
@@ -73,7 +74,7 @@ export function Formulario () {
                         <ErrorMessage component={Error} name="message" />
                     </Item>
                     <Item width="200">
-                        <Button style={{ marginTop: "40px" }} variant="contained" color="primary">Enviar</Button>
+                        <Button type="submit" style={{ marginTop: "40px" }} variant="contained" color="primary">Enviar</Button>
                     </Item>
                 </StyledForm>
             </Formik>

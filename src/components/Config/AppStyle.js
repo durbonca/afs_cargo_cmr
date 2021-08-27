@@ -21,7 +21,6 @@ export const appStyles = makeStyles((theme) => ({
         color: "#FFFEFE",
         textAlign: "left",
         flexGrow:1,
-
     },
     toolbar: {
         display: "flex",
@@ -96,5 +95,10 @@ export const appStyles = makeStyles((theme) => ({
     },
     btnIcon: {
         margin: theme.spacing(1),
+    },
+    csvInput:{
+        backgroundColor: theme.palette.background.default,
+        marginTop: theme.spacing(2),
+        flexGrow: 1
     }
 }));
