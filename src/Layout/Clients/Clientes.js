@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableGrid } from '../Layout/TableGrid';
+import { TableGrid } from '../TableGrid';
 
 export const Clientes = ()=>{
     return  (
