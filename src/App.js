@@ -1,3 +1,4 @@
+import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles'
 import theme from './Config/theme';
 import { DBProvider, useDBContext } from './Config/DBProvider';
