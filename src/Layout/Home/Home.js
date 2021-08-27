@@ -1,5 +1,5 @@
 import React from 'react';
-import CSVImport from '../CSVImport/CSVImport';
+import CSVImport from '../../components/CSVImport/CSVImport';
 import { Box } from '@material-ui/core';
 
 export const Home = () => {

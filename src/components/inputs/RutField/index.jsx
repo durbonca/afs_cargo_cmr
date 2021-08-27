@@ -5,9 +5,7 @@ import { TextField } from '@material-ui/core';
 import idFormat from '../../../helpers/idFormat';
 
 const Input = styled(TextField)`
-  ${({ theme }) => `
-    background-color: ${theme.palette.white};
-  `}
+    background-color: 'white';
 `;
 
 const RutField = ({ classes, handleChange, handleBlur, onKeyPress, defaultValue, fullWidth, name, label }) => {

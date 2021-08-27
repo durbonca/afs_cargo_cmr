@@ -7,7 +7,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import { appStyles } from '../Config/AppStyle';
 import { useDBContext } from '../Config/DBProvider';
 import uuid from 'react-uuid';
-import { Formulario } from '../Form'
+import { Formulario } from './Form'
 import CSVReader from "react-csv-reader";
 
 /* const ConfirmButton = () => {
