@@ -8,7 +8,7 @@ import Page from './Page';
 import { Home } from "./Home/Home";
 import { Users, Login, Profile } from "./Users";
 import { Clientes } from './Clients/Clientes';
-import { Formulario } from './Form/';
+import { XCobrar } from './Accounts/XCobrar';
 
 const Layout = () => {
      const {isAuth} = useDBContext();
@@ -43,8 +43,8 @@ const Layout = () => {
                                         <Route path="/Clients" exact>
                                              <Clientes/>
                                         </Route>
-                                        <Route path="/Form" exact>
-                                             <Formulario/>
+                                        <Route path="/XCobrar" exact>
+                                             <XCobrar/>
                                         </Route>
                                    </Switch>
                               </Page>

@@ -24,16 +24,21 @@ export const DBProvider = ({children}) => {
         //tablegrid
         DataSet:[],
         Columns:[],
+        ShoColumns: [],
         showIdCell: false,
         showbtnAdd: false,
         editRow: false,
         openDialog: false,
-        idRowSelected : null
+        idRowSelected : null,
+        ShowBtnCSV:false,
+        isLoading:false,
+        DataCollectionNow:null
     });
 
     const { email,password,
             drawerOpen, subProfile,
             DataSet, Columns,showIdCell, showbtnAdd, editRow, openDialog, idRowSelected,
+            ShowBtnCSV, isLoading, ShoColumns, DataCollectionNow
         } = state;
 
     const [isAuth, setIsAuth] = useState(() => window.sessionStorage.getItem('user'));
@@ -50,12 +55,16 @@ export const DBProvider = ({children}) => {
 
     //TableGrid
     const [ DialogMode, setDialogMode] = useState('Add');
+    const handleSetShowColumns = (columns) => setState((prevState) => ({ ...prevState, ShoColumns: columns }));
     const handleshowbtnAdd = () => setState((prevState) => ({ ...prevState, showbtnAdd: true }));
     const handleshowIdCell = () => setState((prevState) => ({ ...prevState, showIdCell: true }));
     const handleEditRow= () => setState((prevState) => ({ ...prevState, editRow: true }));
     const handleOpenDialog = () => setState((prevState) => ({ ...prevState, openDialog: true }));
     const handleCloseDialog = () => setState((prevState) => ({ ...prevState, openDialog: false }));
     const handleIdRowSelected = (id) => setState((prevState) => ({ ...prevState, idRowSelected: id }));
+    const handleShowBtnCSV = () => setState((prevState) => ({ ...prevState, ShowBtnCSV: true }));
+
+    const setDataCollectionNow = (collection) => setState((prevState) => ({ ...prevState, DataCollectionNow: collection }));
 
     const isMountedRef = useRef(true);
 
@@ -104,22 +113,45 @@ export const DBProvider = ({children}) => {
         setIsAuth(false);
     }
 
+    const putDataCollection = (collection, d) => {
+        return new Promise((resolve, reject) => {
+            db.collection(collection).add(d).then(() => {
+                resolve(true)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
 
 
-    // const putDataCollection = (collection) => {
-    //     db.collection(collection).add({
-    //         Cliente: 'Nuevo',
-    //         Rut: '1234567890-0',
-    //         Monto: 0,
-    //         datetime: firebase.firestore.FieldValue.serverTimestamp()
-    //     })
-    // }
+    const putDataCollectionAll = (collection, data) => {
+        return new Promise((resolve) => {
+            try {
+                data.Data.forEach(async (d, i) => {
+                    d.datetime = firebase.firestore.Timestamp.fromDate(new Date())
+                    await putDataCollection(collection, d)
+                    console.log(data.CountData)
+                    if (data.CountData - 1 == i) resolve(true)
+                }, {})
+            } catch (e) {
+                console.log(e)
+            }
+        })
 
-    // const delDataCollection = (collection, id) => {
-    //     db.collection(collection).doc(id).delete().then(res => {
-    //         console.log('Deleted!', res);
-    //     });
-    // }
+        // await Promise.all(data.forEach(d => {
+        //     await db.collection(collection).add(d);
+        // }))
+    }
+
+    const delDataCollection = (id) => {
+        return new Promise((resolve, reject) => {
+            db.collection(DataCollectionNow).doc(id).delete().then(() => {
+                resolve(true)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
 
     // const setDataCollection = (collection) => {
     //     db.collection(collection).doc(id).update({
@@ -137,27 +169,36 @@ export const DBProvider = ({children}) => {
     },[DataSet])
 
     const handleColumns= () => {
-        console.log('handleColumns')
-        if(DataSet.length > 0){
-            let cols = Object.keys(DataSet[0]);
-            if(!showIdCell){
-               cols = cols.filter(c => c.toLowerCase() !== 'id')
+        //console.log('handleColumns')
+        if(ShoColumns.length > 0){
+            //console.log('show columns')
+            setState((prevState) => ({ ...prevState, Columns: ShoColumns }));
+        }else{
+            //console.log('dataset columns')
+            if(DataSet.length > 0){
+                let cols = Object.keys(DataSet[0]);
+                if(!showIdCell){
+                cols = cols.filter(c => c.toLowerCase() !== 'id')
+                }
+                setState((prevState) => ({ ...prevState, Columns: cols }));
             }
-            setState((prevState) => ({ ...prevState, Columns: cols }));
         }
     }
 
     const getDataCollection = (collection) => {
-        console.log("getdatacollection")
+        //console.log("getdatacollection")
+        setState((prevState) => ({ ...prevState, isLoading: true }));
         const DataRef = db.collection(collection).orderBy('datetime', 'desc');
         DataRef.onSnapshot(snapshot => {
             let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
             data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
             setState((prevState) => ({...prevState, DataSet: data }))
+            setState((prevState) => ({ ...prevState, isLoading: false }));
         },(error) => {
             console.log(error)
         });
     }
+
 
     const value = useMemo(() => {
         return {
@@ -185,6 +226,9 @@ export const DBProvider = ({children}) => {
             openDialog,
             DialogMode,
             idRowSelected,
+            ShowBtnCSV,
+            isLoading,
+            handleSetShowColumns,
             getDataCollection,
             handleshowbtnAdd,
             handleshowIdCell,
@@ -192,12 +236,17 @@ export const DBProvider = ({children}) => {
             handleOpenDialog,
             handleCloseDialog,
             setDialogMode,
-            handleIdRowSelected
+            handleIdRowSelected,
+            handleShowBtnCSV,
+            putDataCollection,
+            putDataCollectionAll,
+            delDataCollection,
+            setDataCollectionNow
         }
         // eslint-disable-next-line
     },[ isAuth,email, password,
         drawerOpen, subProfile,
-        DataSet, Columns, showIdCell, showbtnAdd, editRow, openDialog, DialogMode, idRowSelected ]);
+        DataSet, Columns, showIdCell, showbtnAdd, editRow, openDialog, DialogMode, idRowSelected, isLoading, DataCollectionNow ]);
 
 
     return  <DBContext.Provider value={value}>

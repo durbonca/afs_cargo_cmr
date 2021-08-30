@@ -80,6 +80,9 @@ export const appStyles = makeStyles((theme) => ({
       background: '#212121',
       color: '#fff'
     },
+    containerTable: {
+        overflowX: 'visible',
+    },
     btnAddTableGrid: {
         margin: theme.spacing(1),
     },
@@ -97,8 +100,44 @@ export const appStyles = makeStyles((theme) => ({
         margin: theme.spacing(1),
     },
     csvInput:{
-        backgroundColor: theme.palette.background.default,
-        marginTop: theme.spacing(2),
-        flexGrow: 1
+        border: '0px solid gray !important',
+        cursor: 'pointer',
+        outline:'0px solid #ddd',
+        padding: '.375rem .75rem !important',
+        fontSize: '1rem !important',
+        margin: '0 5px',
+        color: '#fff',
+        backgroundColor: '#00a19a',
+        borderColor: '#00a19a',
+        opacity: 0,
+        position: 'absolute',
+        right: '-1000px',
+        top: '-1000px',
+    },
+    CSVImport: {
+        backgroundColor: '#00a19a',
+        display: 'inline-block',
+        fontWeight: '400 !important',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        cursor: 'pointer',
+        color: '#fff',
+        fontSize: '.6rem',
+        lineHeight: '1.5 !important',
+        borderRadius: '.25rem !important',
+        transition: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+        minHeight: '15px',
+        position: 'relative',
+        width: 'auto',
+        margin: '7px 0',
+    },
+    btnCarga: {
+        fontFamily: 'Arial',
+        fontSize: '12px',
+        color: 'white',
+        margin: '0 5px',
+    },
+    lblCarga: {
+        marginLeft: '10px'
     }
 }));

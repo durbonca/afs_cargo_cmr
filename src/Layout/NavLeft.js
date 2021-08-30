@@ -7,6 +7,7 @@ import { Drawer, List,ListItem,ListItemIcon,ListItemText,Divider } from "@materi
 import HomeIcon from '@material-ui/icons/Home';
 import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
+import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 
 export const NavLeft = () => {
     const { drawerOpen, handleDrawerClose } = useDBContext();
@@ -15,7 +16,7 @@ export const NavLeft = () => {
                             { label: "Home", href: "/Home", icon: <HomeIcon/> },
                             { label: "Usuarios", href: "/users", icon: <LocalCafeIcon/>},
                             { label: "Clientes", href: "/clients", icon: <PermIdentityIcon/>},
-                            { label: "Formulario Test", href: "/Form", icon: <PermIdentityIcon/>}
+                            { label: "Cuentas x Cobrar", href: "/XCobrar", icon: <AccountBalanceWalletIcon/>}
                         ];
 
     const getDrawerList = () => {

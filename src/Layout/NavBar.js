@@ -17,7 +17,7 @@ export const NavBar = () => {
     const menuId = 'primary-search-account-menu';
 
     const scvLogo = (
-        <Typography variant="h6" component="h1" className={logo}>SCV</Typography>
+        <Typography variant="h6" component="h1" className={logo}>AFS CARGO CMR</Typography>
     );
 
     return (

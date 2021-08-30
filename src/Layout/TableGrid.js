@@ -8,7 +8,8 @@ import { appStyles } from '../Config/AppStyle';
 import { useDBContext } from '../Config/DBProvider';
 import uuid from 'react-uuid';
 import { Formulario } from './Form'
-import CSVReader from "react-csv-reader";
+import CSVImport from '../components/CSVImport/CSVImport';
+import Swal from "sweetalert2";
 
 /* const ConfirmButton = () => {
     const { btnIcon  } = appStyles();
@@ -31,11 +32,32 @@ import CSVReader from "react-csv-reader";
 } */
 
 
-const DeleteButton = () => {
+const DeleteButton = (props) => {
     const { btnIcon  } = appStyles();
+    const { delDataCollection } = useDBContext();
+
+    const handleDeleteRow = () => {
+        Swal.fire({
+            text: 'Se procedera a eliminar el registro, esta seguro ?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No!'
+        }).then((result) => {
+            if(result.isConfirmed === true){
+                delDataCollection(props.id)
+                .then(() => {
+                    console.log("registro "+ props.id + " Eliminado !")
+                })
+            }
+        })
+
+    }
 
     return (
-        <IconButton key={uuid()} className={btnIcon} color="secondary" aria-label="Delete" onClick={() => {alert('clicked Delete') }}>
+        <IconButton key={props.id} className={btnIcon} color="secondary" aria-label="Delete" onClick={() => handleDeleteRow()}>
             <DeleteIcon />
         </IconButton>
     );
@@ -61,7 +83,6 @@ const DialogForm = () => {
 const EditButton = (props) => {
     const { btnIcon  } = appStyles();
     const { handleOpenDialog, setDialogMode, handleIdRowSelected } = useDBContext();
-    console.log(props)
 
     const handleOpenDialogEdit = () => {
         setDialogMode('update');
@@ -82,7 +103,7 @@ const TableAction = (props) => {
     return (
         <Box key={uuid()} component="div">
             { editRow && <EditButton {...props} /> }
-            <DeleteButton />
+            <DeleteButton  {...props} />
         </Box>
     )
 }
@@ -113,7 +134,7 @@ const TableBody = () => {
 }
 
 const TableHead = () => {
-    const { Columns } = useDBContext();
+    const { Columns,isLoading } = useDBContext();
 
     const RowsHead = () => {
         return (
@@ -137,59 +158,36 @@ const TableHead = () => {
 
     return (
         <THead>
-            { (Columns.length > 0) ? <RowsHead /> : <Loading /> }
+            { (Columns.length > 0) ? <RowsHead /> : (isLoading && <Loading /> )}
         </THead>
     )
 }
 
 const TableContainer = ({children}) => {
-    const { showbtnAdd, handleOpenDialog, setDialogMode } = useDBContext();
-    const { ContentRight, btnAddTableGrid, csvInput  } = appStyles();
+    const { showbtnAdd, handleOpenDialog, setDialogMode, ShowBtnCSV } = useDBContext();
+    const { ContentRight, btnAddTableGrid, containerTable } = appStyles();
 
     const handleOpenDialogAdd= () => {
         setDialogMode('Add');
         handleOpenDialog()
     }
 
-    const handleForce = (data, fileInfo) => console.log(data, fileInfo);
-
-    const CSVOptions = {
-        header: true,
-        dynamicTyping: true,
-        skipEmptyLines: true,
-        transformHeader: header => header.toLowerCase().replace(/\W/g, "_")
-    };
-    const inputStyle = {
-       color: 'white',
-       background: 'green'
-    }
-
     return (
-        <TContainer>
+        <TContainer className={containerTable}>
             <Box component="div" className={ContentRight}>
                 { showbtnAdd &&
-                                <>
-                                <CSVReader
-                                    className={csvInput}
-                                    label="Cargar Archivo CSV"
-                                    onFileLoaded={handleForce}
-                                    parserOptions={CSVOptions}
-                                    inputStyle = {inputStyle}
-                                    />
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    size="small"
-                                    className={btnAddTableGrid}
-                                    startIcon={<AddBoxIcon />}
-                                    onClick={handleOpenDialogAdd}
-                                >
-                                    Agregar
-                                </Button>
-
-
-                                </>
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        className={btnAddTableGrid}
+                        startIcon={<AddBoxIcon />}
+                        onClick={handleOpenDialogAdd}
+                    >
+                        Agregar
+                    </Button>
                 }
+                { ShowBtnCSV && <CSVImport /> }
             </Box>
             {children}
         </TContainer>
@@ -201,13 +199,17 @@ export const TableGrid = ({...props}) => {
     const { getDataCollection,
             handleshowbtnAdd,
             handleshowIdCell,
-            handleEditRow } = useDBContext()
+            handleEditRow,
+            handleShowBtnCSV,
+            handleSetShowColumns,
+            setDataCollectionNow
+        } = useDBContext()
 
-    const { DataCollection, showBtnAdd, showIdCell, editRow } = props
-
+    const { DataCollection, showBtnAdd, showIdCell, editRow, ShowBtnCSV, Columns } = props
     useEffect(() => {
         if(DataCollection){
-            getDataCollection('Clientes')
+            setDataCollectionNow(DataCollection)
+            getDataCollection(DataCollection)
         }
         if(showBtnAdd){
             handleshowbtnAdd()
@@ -218,6 +220,13 @@ export const TableGrid = ({...props}) => {
         if(editRow){
             handleEditRow()
         }
+        if(ShowBtnCSV){
+            handleShowBtnCSV()
+        }
+        if(Columns){
+            handleSetShowColumns(props.Columns)
+        }
+
         // eslint-disable-next-line
     },[])
 
