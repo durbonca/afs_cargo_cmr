@@ -233,7 +233,8 @@ export const TableGrid = ({...props}) => {
     return (
         <TableContainer>
             <Table>
-                <TableHead />
+                <TableHead >
+                </TableHead>
                 <TableBody />
             </Table>
             <DialogForm />
