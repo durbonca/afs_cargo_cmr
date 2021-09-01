@@ -68,7 +68,7 @@ export function Formulario () {
                             />
                         <ErrorMessage component={Error} name="invoiceNumber" />
                     </Item>
-                    {/* <Item width="200">
+                    <Item width="200">
                         <Field
                             label="Fecha Documento"
                             name="documentDate"
@@ -76,7 +76,7 @@ export function Formulario () {
                             as={Date}
                             />
                         <ErrorMessage component={Error} name="documentDate" />
-                    </Item> */}
+                    </Item>
                     <Item width="200">
                         <Field
                             label="correo"
