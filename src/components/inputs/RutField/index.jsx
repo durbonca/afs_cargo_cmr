@@ -8,7 +8,7 @@ const Input = styled(TextField)`
     background-color: 'white';
 `;
 
-const RutField = ({ classes, handleChange, handleBlur, onKeyPress, defaultValue, fullWidth, name, label }) => {
+const RutField = ({ classes, handleChange, handleBlur, onKeyPress, defaultValue, fullWidth, name, label, maxlength }) => {
   const [value, setValue] = useState(defaultValue);
 
   const onChange = (event) => {
@@ -35,6 +35,7 @@ const RutField = ({ classes, handleChange, handleBlur, onKeyPress, defaultValue,
       fullWidth={fullWidth}
       size="small"
       variant="outlined"
+      inputProps={maxlength={maxlength}}
     />
   );
 };
@@ -43,6 +44,7 @@ RutField.propTypes = {
   defaultValue: PropTypes.string,
   fullWidth: PropTypes.bool,
   name: PropTypes.string,
+  maxlength: PropTypes.number,
 };
 
 RutField.defaultProps = {
@@ -51,6 +53,7 @@ RutField.defaultProps = {
   name: '',
   fullWidth: true,
   defaultValue: '',
+  maxlength: 254
 };
 
 export default RutField;

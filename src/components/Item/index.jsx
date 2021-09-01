@@ -6,6 +6,7 @@ const Container = styled.div`
   width: ${(props) => props.width}px;
   height: auto;
   margin-right: 25px;
+  margin-top: 10px;
   display: flex;
   flex-direction: column;
 `;

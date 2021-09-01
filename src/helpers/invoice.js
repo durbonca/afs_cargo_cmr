@@ -1,22 +1,19 @@
 import * as Yup from 'yup';
+import idFormat from '../helpers/idFormat';
 
 const messages = {
-    max: 'Este texto es muy largo!',
-    min: 'Este texto es muy corto!',
     email: 'Por favor ingrese un email valido',
-    required: 'Este campo es requerido'
+    required: 'Este campo es requerido',
+    rut: 'El rut ingresado es inválido',
 }
 
 export const invoiceValidation = Yup.object({
-    name: Yup.string()
-    .max(15, messages.max)
-    .min(2, messages.min)
-    .required(messages.required),
-    lastName: Yup.string()
-    .max(20, messages.max)
-    .required(messages.required),
-    email: Yup.string().email(messages.email).required(messages.required),
-    message: Yup.string()
-    .min(5, messages.min)
-    .required(messages.required),
+    rut: Yup.string().required(messages.required)
+    .test('check-rut', messages.rut, (value) => idFormat.checkFormat(value)),
+    companyName: Yup.string().required(messages.required),
+    invoiceNumber: Yup.string().required(messages.required),
+    email: Yup.string().email(messages.email),
+    // documentDate: Yup.date().required(messages.required),
+    totalAmount: Yup.string().required(messages.required),
+    NCE: Yup.string(),
 })

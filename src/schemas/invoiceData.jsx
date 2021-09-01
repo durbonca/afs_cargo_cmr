@@ -1,6 +1,9 @@
 export const invoiceSchema = {
-    name: '',
-    lastName: '',
+    rut: '',
+    companyName: '',
+    invoiceNumber: '',
+    documentDate: '',
     email: '',
-    message: '',
+    totalAmount: '',
+    NCE: '',
 }

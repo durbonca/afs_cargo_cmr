@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Button } from '@material-ui/core';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import { invoiceSchema } from '../../schemas/invoiceData';
-import { TextField, Date, RutField } from '../../components/inputs'
+import { TextField, /* Date, */ RutField } from '../../components/inputs'
 import Item from '../../components/Item';
 import Error from '../../components/Error';
 import { invoiceValidation } from '../../helpers/invoice';
@@ -18,7 +18,6 @@ const StyledForm = styled(Form)`
     `;
 
 export function Formulario () {
-
     return (
         <Container fixed>
             <h1>Formulario</h1>
@@ -32,46 +31,44 @@ export function Formulario () {
                     setSubmitting(false);
                     }, 400);
                 }}
-            >
+            > 
+            {({isValid, dirty, initialValues, handleChange, handleBlur, values}) => (
                 <StyledForm>
-                    <Item width="200">
-                        <Field
-                            label="Folio"
-                            name="invoiceNumber"
-                            type="text"
-                            as={TextField}
-                            />
-                        <ErrorMessage component={Error} name="companyName" />
-                    </Item>
-                    <Item width="200">
-                        <Field
-                            label="Razon Social"
-                            name="companyName"
-                            type="text"
-                            as={TextField}
-                            />
-                        <ErrorMessage component={Error} name="companyName" />
-                    </Item>
+                    {console.log(values)}
                     <Item width="200">
                         <Field
                             label="Rut"
                             name="rut"
-                            type="text"
+                            defaultValue={initialValues.rut}
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            maxlength={12}
                             as={RutField}
                             />
                         <ErrorMessage component={Error} name="rut" />
                     </Item>
                     <Item width="200">
                         <Field
-                            label="correo"
-                            name="email"
-                            type="text"
-                            placeholder="Nombre"
+                            label="Razón Social"
+                            name="companyName"
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
                             as={TextField}
                             />
-                        <ErrorMessage component={Error} name="email" />
+                        <ErrorMessage component={Error} name="companyName" />
                     </Item>
                     <Item width="200">
+                        <Field
+                            label="Folio"
+                            name="invoiceNumber"
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            type="text"
+                            as={TextField}
+                            />
+                        <ErrorMessage component={Error} name="invoiceNumber" />
+                    </Item>
+                    {/* <Item width="200">
                         <Field
                             label="Fecha Documento"
                             name="documentDate"
@@ -79,14 +76,52 @@ export function Formulario () {
                             as={Date}
                             />
                         <ErrorMessage component={Error} name="documentDate" />
+                    </Item> */}
+                    <Item width="200">
+                        <Field
+                            label="correo"
+                            name="email"
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            as={TextField}
+                            />
+                        <ErrorMessage component={Error} name="email" />
                     </Item>
                     <Item width="200">
-                        <Button type="submit" style={{ marginTop: "40px" }} variant="contained" color="primary">Guardar</Button>
+                        <Field
+                            label="Monto Total"
+                            name="totalAmount"
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            as={TextField}
+                            />
+                        <ErrorMessage component={Error} name="totalAmount" />
+                    </Item>
+                    <Item width="425">
+                        <Field
+                            label="NCE o NDE sobre Fact. de Compra"
+                            name="NCE"
+                            handleChange={handleChange}
+                            handleBlur={handleBlur}
+                            as={TextField}
+                            />
+                        <ErrorMessage component={Error} name="NCE" />
+                    </Item>
+
+                    <Item width="200">
+                        <Button
+                            disabled={!isValid || !dirty}
+                            type="submit" 
+                            style={{ marginTop: "40px" }} 
+                            variant="contained" 
+                            color="primary">
+                        Guardar
+                        </Button>
                     </Item>
                 </StyledForm>
+            )}
             </Formik>
         </Container>
-
     )
 }
 
