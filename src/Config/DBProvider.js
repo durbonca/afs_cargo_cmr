@@ -181,7 +181,7 @@ export const DBProvider = ({children}) => {
             }
         }
     }
-    }
+    
 
     const getDataCollection = (collection) => {
         //console.log("getdatacollection")
