@@ -113,6 +113,18 @@ export const DBProvider = ({children}) => {
         setIsAuth(false);
     }
 
+    const updateDataCollection = (collection, id, data) => {
+        console.log(id)
+        return new Promise((resolve, reject) => {
+            db.collection(collection).doc(id).update(data).then(() => {
+                console.log('actualizado')
+                resolve(true)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
+
     const putDataCollection = (collection, d) => {
         return new Promise((resolve, reject) => {
             db.collection(collection).add(d).then(() => {
@@ -257,6 +269,7 @@ export const DBProvider = ({children}) => {
             setDialogMode,
             handleIdRowSelected,
             handleShowBtnCSV,
+            updateDataCollection,
             putDataCollection,
             putDataCollectionAll,
             delDataCollection,

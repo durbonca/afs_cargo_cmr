@@ -12,15 +12,21 @@ import Item from '../../components/Item';
 // import CancelIcon from '@material-ui/icons/Close';
 
 export const RcvVenta = ()=>{
-    const { getDataCollection, DataSet, isLoading } = useDBContext();
+    const { getDataCollection, updateDataCollection, DataSet, isLoading } = useDBContext();
+    const [ editRowsModel, setEditRowsModel ] = React.useState({});
+
+    const handleEditRowsModelChange = React.useCallback((model) => {
+        setEditRowsModel(model);
+      }, []);
 
     const columns = [
-        { field: 'Rutcliente', headerName: 'Rut Cliente',  width: 150,  headerAlign: 'center', editable: true },
-        { field: 'RazonSocial', headerName: 'Razon Social', flex: 1, editable: true },
-        { field: 'Folio', headerName: 'Folio', type: 'number', width: 110, headerAlign: 'center', editable: true },
-        { field: 'FechaDocto', headerName: 'Fecha Docto', type: 'date', headerAlign: 'center', width: 160, editable: true },
-        { field: 'Montototal', headerName: 'Monto total', type: 'number', width: 150, editable: true },
-        { field: 'NCEoNDEsobreFact.deCompra', headerName: 'NCE/NDE', type: 'number', width: 150, editable: true }
+        { field: 'Rutcliente', headerName: 'Rut Cliente',  width: 150,  headerAlign: 'center', align: 'right', editable: true },
+        { field: 'RazonSocial', headerName: 'Razon Social', flex: 1, minWidth: 200, editable: true },
+        { field: 'email', headerName: 'Email', width: 160, hide: true, editable: true },
+        { field: 'Folio', headerName: 'Folio', width: 110, headerAlign: 'center', align: 'right', editable: true },
+        { field: 'FechaDocto', headerName: 'Fecha Docto', type: 'date', headerAlign: 'center', align: 'right', width: 160, editable: false },
+        { field: 'Montototal', headerName: 'Monto total', width: 150, align: 'right', editable: true },
+        { field: 'NCEoNDEsobreFact.deCompra', headerName: 'NCE/NDE', width: 150, align: 'right', editable: true }
     ];
 
     function CustomLoadingOverlay() {
@@ -32,6 +38,7 @@ export const RcvVenta = ()=>{
             </GridOverlay>
         );
     }
+    
 
     function Toolbar() {
         return (
@@ -46,9 +53,15 @@ export const RcvVenta = ()=>{
         );
       }
 
-    const commitChanges = ({ id, row }) => {
-        console.log('el id a actualizar es: ', id);
-        console.table('el data a actualizar es: ', row);
+    const commitChanges = ( id ) => {
+        // construct object from editRowsModel
+        const model = editRowsModel[id];
+        const data = Object.assign({}, ...Object.keys(model).map( key => {return ({[key]: model[key].value})}))
+        if (data) {
+            updateDataCollection('XCobrarSCV', id, data)
+        }else{
+            console.error('no se puede actualizar una entrada vacia')
+        }
     }
 
     useEffect(() => {
@@ -58,25 +71,29 @@ export const RcvVenta = ()=>{
     return  (
         <>
             <Typography style={{margin:'2rem'}} variant="h4" component="h1" color="textSecondary">Datos Cargados Rcv Venta</Typography>
-            <DataGrid
-                localeText={esES.props.MuiDataGrid.localeText}
-                rows={DataSet}
-                columns={columns}
-                pageSize={20}
-                rowHeight={25}
-                rowsPerPageOptions={[15,20,25]}
-                autoHeight
-                pagination
-                editMode="row"
-                components={{
-                    LoadingOverlay: CustomLoadingOverlay,
-                    Toolbar: Toolbar,
-                }}
-                loading={isLoading}
-                checkboxSelection
-                disableSelectionOnClick
-                onRowEditStop={(e)=> commitChanges(e) }
-            />
+            <div style={{ height: 'auto', width: '100%' }}>
+                <DataGrid
+                    localeText={esES.props.MuiDataGrid.localeText}
+                    rows={DataSet}
+                    columns={columns}
+                    pageSize={20}
+                    rowHeight={25}
+                    rowsPerPageOptions={[20]}
+                    autoHeight
+                    pagination
+                    editMode="row"
+                    components={{
+                        LoadingOverlay: CustomLoadingOverlay,
+                        Toolbar: Toolbar,
+                    }}
+                    loading={isLoading}
+                    checkboxSelection
+                    disableSelectionOnClick
+                    onRowEditCommit={(id)=> commitChanges(id) }
+                    editRowsModel={editRowsModel}
+                    onEditRowsModelChange={handleEditRowsModelChange}
+                />
+            </div>
         </>
     );
 
