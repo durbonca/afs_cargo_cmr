@@ -24,7 +24,7 @@ export const DBProvider = ({children}) => {
         //tablegrid
         DataSet:[],
         Columns:[],
-        ShoColumns: [],
+        ShowColumns: [],
         showIdCell: false,
         showbtnAdd: false,
         editRow: false,
@@ -38,7 +38,7 @@ export const DBProvider = ({children}) => {
     const { email,password,
             drawerOpen, subProfile,
             DataSet, Columns,showIdCell, showbtnAdd, editRow, openDialog, idRowSelected,
-            ShowBtnCSV, isLoading, ShoColumns, DataCollectionNow
+            ShowBtnCSV, isLoading, ShowColumns, DataCollectionNow
         } = state;
 
     const [isAuth, setIsAuth] = useState(() => window.sessionStorage.getItem('user'));
@@ -55,7 +55,7 @@ export const DBProvider = ({children}) => {
 
     //TableGrid
     const [ DialogMode, setDialogMode] = useState('Add');
-    const handleSetShowColumns = (columns) => setState((prevState) => ({ ...prevState, ShoColumns: columns }));
+    const handleSetShowColumns = (columns) => setState((prevState) => ({ ...prevState, ShowColumns: columns }));
     const handleshowbtnAdd = () => setState((prevState) => ({ ...prevState, showbtnAdd: true }));
     const handleshowIdCell = () => setState((prevState) => ({ ...prevState, showIdCell: true }));
     const handleEditRow= () => setState((prevState) => ({ ...prevState, editRow: true }));
@@ -129,18 +129,15 @@ export const DBProvider = ({children}) => {
             try {
                 data.Data.forEach(async (d, i) => {
                     d.datetime = firebase.firestore.Timestamp.fromDate(new Date())
+                    d.status = 0
+                    d.email = ''
                     await putDataCollection(collection, d)
-                    console.log(data.CountData)
                     if (data.CountData - 1 == i) resolve(true)
                 }, {})
             } catch (e) {
                 console.log(e)
             }
         })
-
-        // await Promise.all(data.forEach(d => {
-        //     await db.collection(collection).add(d);
-        // }))
     }
 
     const delDataCollection = (id) => {
@@ -170,19 +167,20 @@ export const DBProvider = ({children}) => {
 
     const handleColumns= () => {
         //console.log('handleColumns')
-        if(ShoColumns.length > 0){
-            //console.log('show columns')
-            setState((prevState) => ({ ...prevState, Columns: ShoColumns }));
+        if(ShowColumns.length > 0){
+            const ShowCols = ShowColumns.map(doc => doc.replace(/ /g, ""))
+            setState((prevState) => ({ ...prevState, Columns: ShowCols }));
         }else{
-            //console.log('dataset columns')
             if(DataSet.length > 0){
                 let cols = Object.keys(DataSet[0]);
                 if(!showIdCell){
-                cols = cols.filter(c => c.toLowerCase() !== 'id')
+                    cols = cols.filter(c => c.toLowerCase() !== 'id')
                 }
-                setState((prevState) => ({ ...prevState, Columns: cols }));
+                const ShowCols = cols.map(doc => doc.replace(/ /g, ""))
+                setState((prevState) => ({ ...prevState, Columns: ShowCols }));
             }
         }
+    }
     }
 
     const getDataCollection = (collection) => {
@@ -197,6 +195,27 @@ export const DBProvider = ({children}) => {
         },(error) => {
             console.log(error)
         });
+    }
+
+    /*
+    * Function: getDataWhereCollection: Obtiene La informacion  de todos los campos con clusula where
+    * Colletion (String) : La Coleccion de la base de Datos
+    * Where (Object) : {Column:"String", Data: "String"}
+    * Return (Object)
+    */
+    const getDataWhereCollection = (collection, where) => {
+        return new Promise((resolve, reject) => {
+            setState((prevState) => ({ ...prevState, isLoading: true }));
+            const DataRef = db.collection(collection).where(where.Column, "==", Number(where.Data));
+            DataRef.onSnapshot(snapshot => {
+                let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+                data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
+                setState((prevState) => ({ ...prevState, isLoading: false }));
+                resolve(data)
+            },(error) => {
+                reject(error)
+            });
+        })
     }
 
 
@@ -241,7 +260,8 @@ export const DBProvider = ({children}) => {
             putDataCollection,
             putDataCollectionAll,
             delDataCollection,
-            setDataCollectionNow
+            setDataCollectionNow,
+            getDataWhereCollection,
         }
         // eslint-disable-next-line
     },[ isAuth,email, password,

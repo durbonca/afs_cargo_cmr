@@ -75,6 +75,11 @@ export const appStyles = makeStyles((theme) => ({
       marginTop: theme.spacing(2),
       flexGrow: 1
     },
+    btnSearch: {
+        margin: theme.spacing(1),
+        backgroundColor: '#212121',
+        color:'white'
+    },
     headerLogin: {
       textAlign: 'center',
       background: '#212121',

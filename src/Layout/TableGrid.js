@@ -11,26 +11,6 @@ import { Formulario } from './Form'
 import CSVImport from '../components/CSVImport/CSVImport';
 import Swal from "sweetalert2";
 
-/* const ConfirmButton = () => {
-    const { btnIcon  } = appStyles();
-    return (
-        <IconButton key={uuid()} className={btnIcon} color="secondary" aria-label="Done" onClick={() => { alert('clicked Ok') }}>
-            <DoneIcon />
-        </IconButton>
-    );
-} */
-
-/* const CancelButton = () => {
-    const { btnIcon  } = appStyles();
-    const { handleCancelRow } = useDBContext();
-
-    return (
-        <IconButton key={uuid()} className={btnIcon} color="secondary" aria-label="Done" onClick={() => handleCancelRow()}>
-            <ClearIcon />
-        </IconButton>
-    );
-} */
-
 
 const DeleteButton = (props) => {
     const { btnIcon  } = appStyles();
@@ -134,7 +114,7 @@ const TableBody = () => {
 }
 
 const TableHead = () => {
-    const { Columns,isLoading } = useDBContext();
+    const { Columns, isLoading } = useDBContext();
 
     const RowsHead = () => {
         return (
@@ -232,7 +212,7 @@ export const TableGrid = ({...props}) => {
 
     return (
         <TableContainer>
-            <Table>
+            <Table size="small" >
                 <TableHead />
                 <TableBody />
             </Table>

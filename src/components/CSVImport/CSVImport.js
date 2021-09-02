@@ -11,7 +11,8 @@ const CSVImport = ({
 			inputName = 'fileDoc',
 			disabled = false,
 			_newline = '\r\n',
-			_delimiter = ';'
+			_delimiter = ';',
+			_columns = ['Rut cliente','Razon Social', 'Folio', 'Fecha Docto', 'Monto total','NCE o NDE sobre Fact. de Compra']
 	}) => {
 	const { CSVImport, csvInput, btnCarga, lblCarga } = appStyles();
 	const { putDataCollectionAll } = useDBContext();
@@ -22,11 +23,28 @@ const CSVImport = ({
 		fileInput.current.click()
 	}
 
+	const filterData = (data) => {
+		if(_columns.length > 0){
+			const datafilter = data.map( value => {
+				const newValue = {}
+				for(let key in value){
+					let ind = key.replace(/ /g, "")
+					if(_columns.includes(key)){
+						newValue[ind] = value[key]
+					}
+				}
+				return newValue;
+			});
+			data = datafilter;
+		}
+		return data;
+	}
+
 	const csvToJson = (filecsv) => {
 		let result = {"CodError": 1, "CountData": 0, "Data": [] };
-		const headers = filecsv.slice(0, filecsv.indexOf(_newline)).split(_delimiter);
-		const rows = filecsv.slice(filecsv.indexOf(_newline) + 1).split(_newline);
+		let headers = filecsv.slice(0, filecsv.indexOf(_newline)).split(_delimiter);
 
+		const rows = filecsv.slice(filecsv.indexOf(_newline) + 1).split(_newline);
 		const arr = rows.map(function (row) {
 			const values = row.split(_delimiter);
 			const el = headers.reduce(function (object, header, index) {
@@ -41,7 +59,7 @@ const CSVImport = ({
 		if (countsRows > 0){
 			result.CountData = countsRows;
 			result.CodError = 0;
-			result.Data = arr;
+			result.Data = filterData(arr);
 		}
 		return result;
 	}
@@ -53,15 +71,15 @@ const CSVImport = ({
 		reader.onload = function (e) {
 			const text = e.target.result;
 			const data = csvToJson(text);
-			//console.log(data)
+
 			Swal.fire({
 				text: 'Se Encontraron '+ data.CountData+' registros en el archivo CSV, ¿Desea Cargarlos?',
 				showCancelButton: true,
 				confirmButtonText: 'Cargar',
 				showLoaderOnConfirm: true,
 				cancelButtonText: 'Cancelar',
-				preConfirm: () => {
-					putDataCollectionAll('XCobrarCSV',data).then(d => {
+				preConfirm: async () => {
+					await putDataCollectionAll('XCobrarCSV',data).then(d => {
 						return d;
 					})
 				},

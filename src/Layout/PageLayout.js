@@ -8,6 +8,7 @@ import Page from './Page';
 import { Home } from "./Home/Home";
 import { Users, Login, Profile } from "./Users";
 import { Clientes } from './Clients/Clientes';
+import { RcvVenta } from './Accounts/RcvVenta';
 import { XCobrar } from './Accounts/XCobrar';
 
 const Layout = () => {
@@ -42,6 +43,9 @@ const Layout = () => {
                                         </Route>
                                         <Route path="/Clients" exact>
                                              <Clientes/>
+                                        </Route>
+                                        <Route path="/RcvVenta" exact>
+                                             <RcvVenta/>
                                         </Route>
                                         <Route path="/XCobrar" exact>
                                              <XCobrar/>
