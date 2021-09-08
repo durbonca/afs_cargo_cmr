@@ -28,7 +28,7 @@ const CSVImport = ({
 			const datafilter = data.map( value => {
 				const newValue = {}
 				for(let key in value){
-					let ind = key.replace(/ /g, "")
+					let ind = key.replace(/ /g, "").replace(/[^a-zA-Z0-9]/g, "")
 					if(_columns.includes(key)){
 						newValue[ind] = value[key]
 					}

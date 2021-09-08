@@ -3,8 +3,8 @@ import { appStyles } from '../Config/AppStyle'
 import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem, Fade } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import MailIcon from '@material-ui/icons/Mail'; // Para Validar los correos de los clientes que facturen
 import NotificationsIcon from '@material-ui/icons/Notifications'; // Para ver notificaciones de Telegram de clientes
+import TelegramIcon from '@material-ui/icons/Telegram'; // Para Validar los correos de los clientes que facturen
 
 import { Link } from "react-router-dom";
 
@@ -38,7 +38,7 @@ export const NavBar = () => {
                 {scvLogo}
                 <IconButton aria-label="show 4 new mails" color="inherit">
                     <Badge badgeContent={4} color="secondary">
-                        <MailIcon />
+                        <TelegramIcon />
                     </Badge>
                 </IconButton>
                 <IconButton aria-label="show 17 new notifications" color="inherit">

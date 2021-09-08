@@ -31,7 +31,7 @@ export function Formulario () {
                     setSubmitting(false);
                     }, 400);
                 }}
-            > 
+            >
             {({isValid, dirty, initialValues, handleChange, handleBlur, values}) => (
                 <StyledForm>
                     {console.log(values)}
@@ -42,7 +42,7 @@ export function Formulario () {
                             defaultValue={initialValues.rut}
                             handleChange={handleChange}
                             handleBlur={handleBlur}
-                            maxlength={12}
+                            maxLength={12}
                             as={RutField}
                             />
                         <ErrorMessage component={Error} name="rut" />
@@ -111,9 +111,9 @@ export function Formulario () {
                     <Item width="200">
                         <Button
                             disabled={!isValid || !dirty}
-                            type="submit" 
-                            style={{ marginTop: "40px" }} 
-                            variant="contained" 
+                            type="submit"
+                            style={{ marginTop: "40px" }}
+                            variant="contained"
                             color="primary">
                         Guardar
                         </Button>

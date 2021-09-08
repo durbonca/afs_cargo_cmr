@@ -1,6 +1,7 @@
 import React, { createContext, useState, useMemo, useEffect, useContext, useRef } from 'react';
 import firebase from './firebase';
 import { useHistory } from "react-router-dom";
+import _ from 'lodash'
 
 const DBContext = createContext()
 
@@ -193,19 +194,43 @@ export const DBProvider = ({children}) => {
             }
         }
     }
-    
+
+    const handleDataGridColumns= () => {
+        //const columns = []
+        //if(ShowColumns.length > 0){
+            //console.log('show columns')
+            const ShowCols = ShowColumns.map(doc => doc.replace(/ /g, "").replace(/./g, ""))
+            ShowCols.map(doc => {
+                console.log(doc)
+            })
+
+            //setState((prevState) => ({ ...prevState, Columns: ShowCols }));
+        // }else{
+        //     //console.log('dataset columns')
+        //     if(DataSet.length > 0){
+        //         let cols = Object.keys(DataSet[0]);
+        //         if(!showIdCell){
+        //             cols = cols.filter(c => c.toLowerCase() !== 'id')
+        //         }
+        //         const ShowCols = cols.map(doc => doc.replace(/ /g, ""))
+        //         setState((prevState) => ({ ...prevState, Columns: ShowCols }));
+        //     }
+        // }
+    }
 
     const getDataCollection = (collection) => {
-        //console.log("getdatacollection")
-        setState((prevState) => ({ ...prevState, isLoading: true }));
-        const DataRef = db.collection(collection).orderBy('datetime', 'desc');
-        DataRef.onSnapshot(snapshot => {
-            let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
-            data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
-            setState((prevState) => ({...prevState, DataSet: data }))
-            setState((prevState) => ({ ...prevState, isLoading: false }));
-        },(error) => {
-            console.log(error)
+        return new Promise((resolve, reject) => {
+            setState((prevState) => ({ ...prevState, isLoading: true }));
+            const DataRef = db.collection(collection).orderBy('datetime', 'desc');
+            DataRef.onSnapshot(snapshot => {
+                let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+                data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
+                setState((prevState) => ({...prevState, DataSet: data }))
+                setState((prevState) => ({ ...prevState, isLoading: false }));
+                resolve(data)
+            },(error) => {
+                reject(error)
+            });
         });
     }
 
@@ -230,6 +255,18 @@ export const DBProvider = ({children}) => {
         })
     }
 
+    const removeDataDuplicates = (ArrayOrigin, field ) => {
+        return _.uniqBy(ArrayOrigin, field);
+    }
+
+    const groupByData = (ArrayOrigin, field) => {
+        return _.groupBy(ArrayOrigin, field)
+    }
+
+    const sumByField = (ArrayOrigin, field) => {
+        const d = _.each(ArrayOrigin, item => item[field] = Number(item[field]));
+        return _.sumBy(d, field)
+    }
 
     const value = useMemo(() => {
         return {
@@ -275,6 +312,12 @@ export const DBProvider = ({children}) => {
             delDataCollection,
             setDataCollectionNow,
             getDataWhereCollection,
+            handleDataGridColumns,
+
+            //Functions
+            removeDataDuplicates,
+            groupByData,
+            sumByField
         }
         // eslint-disable-next-line
     },[ isAuth,email, password,
