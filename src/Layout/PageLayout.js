@@ -6,7 +6,7 @@ import { NavBar } from './NavBar';
 import { NavLeft } from "./NavLeft";
 import Page from './Page';
 import { Home } from "./Home/Home";
-import { Users, Login, Profile } from "./Users";
+import { /* Users, */ Login, Profile } from "./Users";
 import { Clientes } from './Clients/Clientes';
 import { RcvVenta } from './Accounts/RcvVenta';
 import { XCobrar } from './Accounts/XCobrar';
@@ -17,7 +17,7 @@ const Layout = () => {
 
 
     if(isAuth==null) {
-        return (<h1>Verificando Credenciales...</h1 >)
+        return (<h1 style={{textAlign: 'center'}}>Verificando Credenciales...</h1 >)
     }
 
      return (
@@ -32,22 +32,22 @@ const Layout = () => {
                               <div className={offset}></div>
                               <Page>
                                    <Switch>
-                                        <Route path="/users" exact>
-                                             <Users/>
-                                        </Route>
-                                        <Route path="/Profile" exact>
-                                             <Profile/>
-                                        </Route>
-                                        <Route path="/Home" exact>
+                                        <Route path="/" exact>
                                              <Home />
                                         </Route>
-                                        <Route path="/Clients" exact>
+                                        {/* <Route path="/users" >
+                                             <Users/>
+                                        </Route> */}
+                                        <Route path="/Profile" >
+                                             <Profile/>
+                                        </Route>
+                                        <Route path="/Clients" >
                                              <Clientes/>
                                         </Route>
-                                        <Route path="/RcvVenta" exact>
+                                        <Route path="/RcvVenta" >
                                              <RcvVenta/>
                                         </Route>
-                                        <Route path="/XCobrar" exact>
+                                        <Route path="/XCobrar" >
                                              <XCobrar/>
                                         </Route>
                                    </Switch>

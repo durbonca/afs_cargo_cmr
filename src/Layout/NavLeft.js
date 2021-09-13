@@ -5,7 +5,7 @@ import { Link as RouterLink } from "react-router-dom";
 import { Drawer, List,ListItem,ListItemIcon,ListItemText,Divider } from "@material-ui/core";
 
 import HomeIcon from '@material-ui/icons/Home';
-import LocalCafeIcon from '@material-ui/icons/LocalCafe';
+// import LocalCafeIcon from '@material-ui/icons/LocalCafe';
 import PermIdentityIcon from '@material-ui/icons/PermIdentity';
 import AccountBalanceWalletIcon from '@material-ui/icons/AccountBalanceWallet';
 import StorageIcon from '@material-ui/icons/Storage';
@@ -14,8 +14,8 @@ export const NavLeft = () => {
     const { drawerOpen, handleDrawerClose } = useDBContext();
     const { drawerContainer,offset,drawerPaper } = appStyles();
     const headersData = [
-                            { label: "Home", href: "/Home", icon: <HomeIcon/> },
-                            { label: "Usuarios", href: "/users", icon: <LocalCafeIcon/>},
+                            { label: "Home", href: "/", icon: <HomeIcon/> },
+                            /* { label: "Usuarios", href: "/users", icon: <LocalCafeIcon/>}, */
                             { label: "Clientes", href: "/clients", icon: <PermIdentityIcon/>},
                             { label: "Cuentas x Cobrar", href: "/XCobrar", icon: <AccountBalanceWalletIcon/>},
                             { label: "Data RCV VENTA", href: "/RcvVenta", icon: <StorageIcon/>}
@@ -48,6 +48,7 @@ export const NavLeft = () => {
                 anchor: "left",
                 open: drawerOpen,
                 onClose: handleDrawerClose,
+                onClick: handleDrawerClose,
                 classes: {
                     paper:drawerPaper
                 }
