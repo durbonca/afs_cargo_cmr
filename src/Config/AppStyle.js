@@ -21,7 +21,6 @@ export const appStyles = makeStyles((theme) => ({
         color: "#FFFEFE",
         textAlign: "left",
         flexGrow:1,
-
     },
     toolbar: {
         display: "flex",
@@ -56,10 +55,10 @@ export const appStyles = makeStyles((theme) => ({
     content: {
         flexGrow:1,
         backgroundColor: theme.palette.background.default,
-        padding: theme.spacing(3),
+        padding: theme.spacing(1),
     },
     paper: {
-        padding: theme.spacing(2),
+        padding: theme.spacing(1),
         textAlign: 'center',
         color: theme.palette.text.secondary,
     },
@@ -70,16 +69,24 @@ export const appStyles = makeStyles((theme) => ({
       display: 'flex',
       flexWrap: 'wrap',
       width: 400,
-      margin: `${theme.spacing(0)} auto`
+      //margin: `${theme.spacing(0)} auto`
     },
     btnLogin: {
       marginTop: theme.spacing(2),
       flexGrow: 1
     },
+    btnSearch: {
+        margin: theme.spacing(1),
+        backgroundColor: '#212121',
+        color:'white'
+    },
     headerLogin: {
       textAlign: 'center',
       background: '#212121',
       color: '#fff'
+    },
+    containerTable: {
+        overflowX: 'visible',
     },
     btnAddTableGrid: {
         margin: theme.spacing(1),
@@ -96,5 +103,46 @@ export const appStyles = makeStyles((theme) => ({
     },
     btnIcon: {
         margin: theme.spacing(1),
+    },
+    csvInput:{
+        border: '0px solid gray !important',
+        cursor: 'pointer',
+        outline:'0px solid #ddd',
+        padding: '.375rem .75rem !important',
+        fontSize: '1rem !important',
+        margin: '0 5px',
+        color: '#fff',
+        backgroundColor: '#00a19a',
+        borderColor: '#00a19a',
+        opacity: 0,
+        position: 'absolute',
+        right: '-1000px',
+        top: '-1000px',
+    },
+    CSVImport: {
+        backgroundColor: '#00a19a',
+        display: 'inline-block',
+        fontWeight: '400 !important',
+        textAlign: 'center',
+        verticalAlign: 'middle',
+        cursor: 'pointer',
+        color: '#fff',
+        fontSize: '.6rem',
+        lineHeight: '1.5 !important',
+        borderRadius: '.25rem !important',
+        transition: 'color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out',
+        minHeight: '15px',
+        position: 'relative',
+        width: 'auto',
+        margin: '7px 0',
+    },
+    btnCarga: {
+        fontFamily: 'Arial',
+        fontSize: '12px',
+        color: 'white',
+        margin: '0 5px',
+    },
+    lblCarga: {
+        marginLeft: '10px'
     }
 }));

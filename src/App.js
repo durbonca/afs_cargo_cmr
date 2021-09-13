@@ -1,8 +1,9 @@
+import React from 'react';
 import { ThemeProvider } from '@material-ui/core/styles'
-import theme from './components/Config/theme';
-import { DBProvider, useDBContext } from './components/Config/DBProvider';
+import theme from './Config/theme';
+import { DBProvider, useDBContext } from './Config/DBProvider';
 import { BrowserRouter } from "react-router-dom";
-import Layout from './components/Layout/PageLayout'
+import Layout from './Layout/PageLayout';
 
 const InitApp = () => {
     const {isAuth} = useDBContext();

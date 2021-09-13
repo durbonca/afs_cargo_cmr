@@ -1,10 +1,10 @@
 import React from 'react';
 import { Card, CardHeader, CardContent, CardActions, TextField, Button } from '@material-ui/core';
-import { useDBContext } from '../Config/DBProvider';
-import Page from '../Layout/Page';
-import { appStyles } from '../Config/AppStyle';
+import { useDBContext } from '../../Config/DBProvider';
+import Page from '../Page';
+import { appStyles } from '../../Config/AppStyle';
 
-export const Login = () => {
+const Login = () => {
     const { login, emailChange, passwordChange } = useDBContext();
     const { cardLogin, containerLogin, headerLogin, btnLogin } = appStyles();
 
@@ -38,3 +38,5 @@ export const Login = () => {
         </Page>
     )
 }
+
+export default Login;
