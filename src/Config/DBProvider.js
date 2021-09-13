@@ -114,6 +114,41 @@ export const DBProvider = ({children}) => {
         setIsAuth(false);
     }
 
+
+    const SendMail = (message) => {
+        return new Promise((resolve, reject) => {
+            setState((prevState) => ({ ...prevState, isLoading: true }));
+            const  headersList = {
+                "Accept": "*/*",
+                "User-Agent": "Afs CMR Client (https://AfsCmrClient.io)",
+                "Content-Type": "application/json"
+            }
+
+            const contentMails= {
+                "name": message.name,
+                "to": message.to,
+                "subject": message.subject,
+                "html": message.html
+            };
+
+
+            console.log(headersList)
+            console.log(contentMails)
+
+            fetch("http://localhost:5001/sendEmail", {
+                method: "POST",
+                body: JSON.stringify(contentMails),
+                headers: headersList
+            }).then((response) => {
+                setState((prevState) => ({ ...prevState, isLoading: false }));
+                resolve(response.text());
+            }).catch((error)=>{
+                setState((prevState) => ({ ...prevState, isLoading: false }));
+                reject(error)
+            })
+        })
+    }
+
     const updateDataCollection = (collection, id, data) => {
         console.log(id)
         return new Promise((resolve, reject) => {
@@ -247,11 +282,49 @@ export const DBProvider = ({children}) => {
             DataRef.onSnapshot(snapshot => {
                 let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
                 data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
+                setState((prevState) => ({...prevState, DataSet: data }))
                 setState((prevState) => ({ ...prevState, isLoading: false }));
                 resolve(data)
             },(error) => {
                 reject(error)
             });
+        })
+    }
+
+     /*
+    * Function: getDataWhereCollection: Obtiene La informacion  de todos los campos con clusula where
+    * Colletion (String) : La Coleccion de la base de Datos
+    * Where (Object) : {Column:"String", Data: "String"}
+    * Return (Object)
+    */
+    const getDataWhereSearchCollection = (collection, where) => {
+        return new Promise((resolve, reject) => {
+            setState((prevState) => ({ ...prevState, isLoading: true }));
+            const DataRef = db.collection(collection).where(where.Column, "==", Number(where.Data));
+            DataRef.onSnapshot(snapshot => {
+                let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+                data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
+                setState((prevState) => ({ ...prevState, isLoading: false }));
+                resolve(data)
+            },(error) => {
+                reject(error)
+            });
+        })
+    }
+
+     const getDataById = async (collection, id) => {
+        return new Promise((resolve, reject) => {
+            console.log({collection,id})
+            const DocRef = db.collection(collection).doc(id);
+            DocRef.get().then((doc) => {
+                if (doc.exists) {
+                    resolve(doc.data());
+                } else {
+                    resolve(null);
+                }
+            }).catch((error) => {
+                reject(error);
+            })
         })
     }
 
@@ -266,6 +339,10 @@ export const DBProvider = ({children}) => {
     const sumByField = (ArrayOrigin, field) => {
         const d = _.each(ArrayOrigin, item => item[field] = Number(item[field]));
         return _.sumBy(d, field)
+    }
+
+    const formatNumber = (number) => {
+        return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'CLP' }).format(number);
     }
 
     const value = useMemo(() => {
@@ -312,12 +389,16 @@ export const DBProvider = ({children}) => {
             delDataCollection,
             setDataCollectionNow,
             getDataWhereCollection,
+            getDataById,
             handleDataGridColumns,
+            getDataWhereSearchCollection,
 
             //Functions
             removeDataDuplicates,
             groupByData,
-            sumByField
+            sumByField,
+            SendMail,
+            formatNumber
         }
         // eslint-disable-next-line
     },[ isAuth,email, password,

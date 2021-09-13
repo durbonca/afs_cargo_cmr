@@ -79,16 +79,19 @@ function FormXCobrar() {
                                 startIcon={<SearchIcon />}>
                             Buscar
                             </Button>
+                            <Divider />
+                            ENVIOS MASIVOS
+                            <Divider />
                             <Button
                                 type="button"
-                                color='secundary'
+                                color='secondary'
                                 variant='contained'
                                 startIcon={<MailOutlineIcon />}>
                             Mail por Factura
                             </Button>
                             <Button
                                 type="button"
-                                color='secundary'
+                                color='secondary'
                                 variant='contained'
                                 startIcon={<MailIcon />}>
                             Mail por Total
