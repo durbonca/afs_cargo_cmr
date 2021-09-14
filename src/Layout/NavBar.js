@@ -1,10 +1,10 @@
 import React from "react";
 import { appStyles } from '../Config/AppStyle'
-import { AppBar, Toolbar, Typography, IconButton, Badge, Menu, MenuItem, Fade } from "@material-ui/core";
+import { AppBar, Toolbar, Typography, IconButton, /* Badge, */ Menu, MenuItem, Fade } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
-import NotificationsIcon from '@material-ui/icons/Notifications'; // Para ver notificaciones de Telegram de clientes
-import TelegramIcon from '@material-ui/icons/Telegram'; // Para Validar los correos de los clientes que facturen
+// import NotificationsIcon from '@material-ui/icons/Notifications'; // Para ver notificaciones de Telegram de clientes
+// import TelegramIcon from '@material-ui/icons/Telegram'; // Para Validar los correos de los clientes que facturen
 
 import { Link } from "react-router-dom";
 
@@ -36,7 +36,7 @@ export const NavBar = () => {
                     <MenuIcon />
                 </IconButton>
                 {scvLogo}
-                <IconButton aria-label="show 4 new mails" color="inherit">
+                {/* <IconButton aria-label="show 4 new mails" color="inherit">
                     <Badge badgeContent={4} color="secondary">
                         <TelegramIcon />
                     </Badge>
@@ -45,7 +45,7 @@ export const NavBar = () => {
                     <Badge badgeContent={17} color="secondary">
                         <NotificationsIcon />
                     </Badge>
-                </IconButton>
+                </IconButton> */}
                 <IconButton
                         edge="end"
                         aria-label="account of current user"

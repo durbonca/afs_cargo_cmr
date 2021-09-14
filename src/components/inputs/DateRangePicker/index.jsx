@@ -3,9 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import esLocale from 'date-fns/locale/es';
-import { Button } from '@material-ui/core'
+// import { Button } from '@material-ui/core'
 import styled from 'styled-components';
-import { add, isSameDay } from 'date-fns';
+// import { add, /* isSameDay */ } from 'date-fns';
 
 const useStyles = makeStyles({
   date: {
@@ -29,38 +29,38 @@ const GroupFieldsContainer = styled.div`
   }
 `;
 
-const activeButtonStyle = { backgroundColor: '#0070D2', color: 'white', borderColor: '#0070D2' };
-const defaultButtonStyle = { backgroundColor: 'white', color: '#0070D2', borderColor: 'rgba(0, 0, 0, 0.23)' };
+// const activeButtonStyle = { backgroundColor: '#0070D2', color: 'white', borderColor: '#0070D2' };
+// const defaultButtonStyle = { backgroundColor: 'white', color: '#0070D2', borderColor: 'rgba(0, 0, 0, 0.23)' };
 
 export default function DateRangePicker({ onChange, onSubmit, disableFuture, disablePast, handleErrors }) {
-  const today = new Date();
-  const last7Days = add(new Date(), { days: -7 });
+  // const today = new Date();
+  // const last7Days = add(new Date(), { days: -7 });
 
   const defaultDateRange = { startDate: null, endDate: null };
 
   const [dateRange, setDateRange] = React.useState(defaultDateRange);
   const [errors, setErrors] = React.useState({ startDate: '', endDate: '' });
 
-  const rangeIsLast7Days = isSameDay(dateRange?.startDate, last7Days) && isSameDay(dateRange?.endDate, today);
-  const rangeIsToday = isSameDay(dateRange?.startDate, today) && isSameDay(dateRange?.endDate, today);
+  // const rangeIsLast7Days = isSameDay(dateRange?.startDate, last7Days) && isSameDay(dateRange?.endDate, today);
+  // const rangeIsToday = isSameDay(dateRange?.startDate, today) && isSameDay(dateRange?.endDate, today);
 
-  const handleLast7DaysButton = (event) => {
+/*   const handleLast7DaysButton = (event) => {
     event.preventDefault();
     if (rangeIsLast7Days) {
       setDateRange(defaultDateRange);
     } else {
       setDateRange({ startDate: last7Days, endDate: today });
     }
-  };
+  }; */
 
-  const handleTodayButton = (event) => {
+/*   const handleTodayButton = (event) => {
     event.preventDefault();
     if (rangeIsToday) {
       setDateRange(defaultDateRange);
     } else {
       setDateRange({ startDate: today.setHours(0, 0, 0, 0), endDate: today.setHours(23, 59, 59) });
     }
-  };
+  }; */
 
   const handleStartDate = (date) => {
     setDateRange({ ...dateRange, startDate: date });
@@ -91,7 +91,7 @@ export default function DateRangePicker({ onChange, onSubmit, disableFuture, dis
 
   return (
     <GroupFieldsContainer>
-      <Button
+      {/* <Button
         dataCy="todayDateRangeButton"
         onClick={handleTodayButton}
         component="button"
@@ -119,7 +119,7 @@ export default function DateRangePicker({ onChange, onSubmit, disableFuture, dis
           boxShadow: 'none',
           ...(rangeIsLast7Days ? activeButtonStyle : defaultButtonStyle),
         }}
-      >Últimos 7 dias</Button>
+      >Últimos 7 dias</Button> */}
       <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
         <KeyboardDatePicker
           name="startDate"

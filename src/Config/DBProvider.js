@@ -114,12 +114,47 @@ export const DBProvider = ({children}) => {
         setIsAuth(false);
     }
 
+
+    const SendMail = (message) => {
+        return new Promise((resolve, reject) => {
+            setState((prevState) => ({ ...prevState, isLoading: true }));
+            const  headersList = {
+                "Accept": "*/*",
+                "User-Agent": "Afs CMR Client (https://AfsCmrClient.io)",
+                "Content-Type": "application/json"
+            }
+
+            const contentMails= {
+                "name": message.name,
+                "to": message.to,
+                "subject": message.subject,
+                "html": message.html
+            };
+
+
+            console.log(headersList)
+            console.log(contentMails)
+
+            fetch("http://localhost:5001/sendEmail", {
+                method: "POST",
+                body: JSON.stringify(contentMails),
+                headers: headersList
+            }).then((response) => {
+                setState((prevState) => ({ ...prevState, isLoading: false }));
+                resolve(response.text());
+            }).catch((error)=>{
+                setState((prevState) => ({ ...prevState, isLoading: false }));
+                reject(error)
+            })
+        })
+    }
+
     const updateDataCollection = (collection, id, data) => {
-        console.log(id)
+        console.log(collection)
         return new Promise((resolve, reject) => {
             db.collection(collection).doc(id).update(data).then(() => {
-                console.log('actualizado')
                 resolve(true)
+                console.log('actualizado')
             }).catch(error => {
                 reject(error)
             })
@@ -136,6 +171,27 @@ export const DBProvider = ({children}) => {
         })
     }
 
+    const getDataWhereCliente = (where) => {
+        return new Promise((resolve, reject) => {
+            const DataRef = db.collection('Clientes').where(where.Column, "==", Number(where.Data));
+            DataRef.onSnapshot(snapshot => {
+                let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                !!data && resolve(true);
+            },() => {
+                reject(false)
+            });
+        })
+    }
+
+    const putDataCliente = (d) => {
+        return new Promise((resolve, reject) => {
+            db.collection('Clientes').add(d).then(() => {
+                resolve(true)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
 
     const putDataCollectionAll = (collection, data) => {
         return new Promise((resolve) => {
@@ -143,7 +199,12 @@ export const DBProvider = ({children}) => {
                 data.Data.forEach(async (d, i) => {
                     d.datetime = firebase.firestore.Timestamp.fromDate(new Date())
                     d.status = 0
-                    d.email = ''
+                    await getDataWhereCliente({Column: 'Rutcliente', Data: d.Rutcliente})
+                    .then( response => {
+                        if(!response){
+                            putDataCliente({Rutcliente: d.Rutcliente, RazonSocial: d.RazonSocial, email: '', datetime: d.datetime})
+                        }
+                    } )
                     await putDataCollection(collection, d)
                     if (data.CountData - 1 == i) resolve(true)
                 }, {})
@@ -247,11 +308,50 @@ export const DBProvider = ({children}) => {
             DataRef.onSnapshot(snapshot => {
                 let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
                 data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
+                setState((prevState) => ({...prevState, DataSet: data }))
                 setState((prevState) => ({ ...prevState, isLoading: false }));
                 resolve(data)
             },(error) => {
                 reject(error)
             });
+        })
+    }
+
+     /*
+    * Function: getDataWhereCollection: Obtiene La informacion  de todos los campos con clusula where
+    * Colletion (String) : La Coleccion de la base de Datos
+    * Where (Object) : {Column:"String", Data: "String"}
+    * Return (Object)
+    */
+    const getDataWhereSearchCollection = (collection, where) => {
+        console.log(where)
+        /* return new Promise((resolve, reject) => {
+            // setState((prevState) => ({ ...prevState, isLoading: true }));
+            const DataRef = db.collection(collection).where(where.Column, "==", Number(where));
+            DataRef.onSnapshot(snapshot => {
+                let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
+                data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
+                // setState((prevState) => ({ ...prevState, isLoading: false }));
+                resolve(data)
+            },(error) => {
+                reject(error)
+            });
+        }) */
+    }
+
+     const getDataById = async (collection, id) => {
+        return new Promise((resolve, reject) => {
+            console.log({collection,id})
+            const DocRef = db.collection(collection).doc(id);
+            DocRef.get().then((doc) => {
+                if (doc.exists) {
+                    resolve(doc.data());
+                } else {
+                    resolve(null);
+                }
+            }).catch((error) => {
+                reject(error);
+            })
         })
     }
 
@@ -266,6 +366,10 @@ export const DBProvider = ({children}) => {
     const sumByField = (ArrayOrigin, field) => {
         const d = _.each(ArrayOrigin, item => item[field] = Number(item[field]));
         return _.sumBy(d, field)
+    }
+
+    const formatNumber = (number) => {
+        return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'CLP' }).format(number);
     }
 
     const value = useMemo(() => {
@@ -312,12 +416,16 @@ export const DBProvider = ({children}) => {
             delDataCollection,
             setDataCollectionNow,
             getDataWhereCollection,
+            getDataById,
             handleDataGridColumns,
+            getDataWhereSearchCollection,
 
             //Functions
             removeDataDuplicates,
             groupByData,
-            sumByField
+            sumByField,
+            SendMail,
+            formatNumber
         }
         // eslint-disable-next-line
     },[ isAuth,email, password,
