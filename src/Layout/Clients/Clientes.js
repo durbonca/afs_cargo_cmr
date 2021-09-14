@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core';
 import Item from '../../components/Item';
 
 export const Clientes = ()=>{
-    const { getDataCollection, updateDataCollection, removeDataDuplicates, isLoading  } = useDBContext();
+    const { getDataCollection, updateDataCollection, isLoading  } = useDBContext();
     const [ dataRowsBody, setdataRowsBody ] = useState([])
     const [ editRowsModel, setEditRowsModel ] = useState({});
 
@@ -55,10 +55,10 @@ export const Clientes = ()=>{
     }
 
     useEffect(() => {
-        getDataCollection('XCobrarCSV').then((data) => {
-            let datafilter = removeDataDuplicates(data,"RazonSocial");
-            console.log(datafilter)
-            setdataRowsBody(datafilter)
+        getDataCollection('Clientes').then((data) => {
+            // let datafilter = removeDataDuplicates(data,"RazonSocial");
+            // console.log(datafilter)
+            setdataRowsBody(data)
         })
     },[])
 
