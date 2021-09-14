@@ -171,6 +171,27 @@ export const DBProvider = ({children}) => {
         })
     }
 
+    const getDataWhereCliente = (where) => {
+        return new Promise((resolve, reject) => {
+            const DataRef = db.collection('Clientes').where(where.Column, "==", Number(where.Data));
+            DataRef.onSnapshot(snapshot => {
+                let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
+                !!data && resolve(true);
+            },() => {
+                reject(false)
+            });
+        })
+    }
+
+    const putDataCliente = (d) => {
+        return new Promise((resolve, reject) => {
+            db.collection('Clientes').add(d).then(() => {
+                resolve(true)
+            }).catch(error => {
+                reject(error)
+            })
+        })
+    }
 
     const putDataCollectionAll = (collection, data) => {
         return new Promise((resolve) => {
@@ -178,7 +199,12 @@ export const DBProvider = ({children}) => {
                 data.Data.forEach(async (d, i) => {
                     d.datetime = firebase.firestore.Timestamp.fromDate(new Date())
                     d.status = 0
-                    d.email = ''
+                    await getDataWhereCliente({Column: 'Rutcliente', Data: d.Rutcliente})
+                    .then( response => {
+                        if(!response){
+                            putDataCliente({Rutcliente: d.Rutcliente, RazonSocial: d.RazonSocial, email: '', datetime: d.datetime})
+                        }
+                    } )
                     await putDataCollection(collection, d)
                     if (data.CountData - 1 == i) resolve(true)
                 }, {})

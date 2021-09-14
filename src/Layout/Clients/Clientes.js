@@ -46,7 +46,6 @@ export const Clientes = ()=>{
         // construct object from editRowsModel
         const model = editRowsModel[id];
         const data = Object.assign({}, ...Object.keys(model).map( key => {return ({[key]: model[key].value})}))
-        //!data.NCEoNDEsobreFactdeCompra ? data.NCEoNDEsobreFactdeCompra = "" : null;
         if (data) {
             console.log(id, data)
             updateDataCollection('Clientes', id, data)
