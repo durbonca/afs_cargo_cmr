@@ -1,13 +1,18 @@
 import React, { useEffect,useState } from 'react';
-import { DataGrid, GridOverlay } from '@mui/x-data-grid';
+import { DataGrid, esES, GridOverlay, GridToolbarDensitySelector, GridToolbarContainer } from '@mui/x-data-grid';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { useDBContext } from '../../Config/DBProvider';
 import { Typography } from '@material-ui/core';
-
+import Item from '../../components/Item';
 
 export const Clientes = ()=>{
-    const { getDataCollection, removeDataDuplicates, isLoading  } = useDBContext();
+    const { getDataCollection, updateDataCollection, removeDataDuplicates, isLoading  } = useDBContext();
     const [ dataRowsBody, setdataRowsBody ] = useState([])
+    const [ editRowsModel, setEditRowsModel ] = useState({});
+
+    const handleEditRowsModelChange = React.useCallback((model) => {
+        setEditRowsModel(model);
+      }, []);
 
     const columns = [
         { field: 'Rutcliente', headerName: 'Rut Cliente',  width: 150,  headerAlign: 'center', editable: false },
@@ -17,6 +22,16 @@ export const Clientes = ()=>{
 
     ];
 
+    function Toolbar() {
+        return (
+          <GridToolbarContainer style={{ flexDirection: 'row-reverse'}}>
+            <Item>
+                <GridToolbarDensitySelector />
+            </Item>
+          </GridToolbarContainer>
+        );
+      }
+
     function CustomLoadingOverlay() {
         return (
             <GridOverlay>
@@ -25,6 +40,19 @@ export const Clientes = ()=>{
                 </div>
             </GridOverlay>
         );
+    }
+
+    const commitChanges = ( id ) => {
+        // construct object from editRowsModel
+        const model = editRowsModel[id];
+        const data = Object.assign({}, ...Object.keys(model).map( key => {return ({[key]: model[key].value})}))
+        //!data.NCEoNDEsobreFactdeCompra ? data.NCEoNDEsobreFactdeCompra = "" : null;
+        if (data) {
+            console.log(id, data)
+            updateDataCollection('Clientes', id, data)
+        }else{
+            console.error('no se puede actualizar una entrada vacia')
+        }
     }
 
     useEffect(() => {
@@ -40,18 +68,25 @@ export const Clientes = ()=>{
             <Typography variant="h4" color="textSecondary">Clientes Registrados</Typography>
             <div style={{ width: '100%' }}>
             <DataGrid
+                localeText={esES.props.MuiDataGrid.localeText}
                 rows={dataRowsBody}
                 columns={columns}
                 pageSize={20}
                 rowHeight={25}
-                rowsPerPageOptions={[15,20,25]}
+                rowsPerPageOptions={[20]}
                 autoHeight
                 pagination
                 editMode="row"
                 components={{
                     LoadingOverlay: CustomLoadingOverlay,
+                    Toolbar: Toolbar,
                 }}
                 loading={isLoading}
+                checkboxSelection
+                disableSelectionOnClick
+                onRowEditCommit={(id)=> commitChanges(id) }
+                editRowsModel={editRowsModel}
+                onEditRowsModelChange={handleEditRowsModelChange}
             />
             </div>
         </>
