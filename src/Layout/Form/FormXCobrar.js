@@ -5,6 +5,7 @@ import Divider from '@material-ui/core/Divider';
 import SearchIcon from '@material-ui/icons/Search';
 import MailIcon from '@material-ui/icons/Mail';
 import MailOutlineIcon from '@material-ui/icons/MailOutline';
+import { useDBContext } from '../../Config/DBProvider';
 
 import { RutField, DateRangePicker } from '../../components/inputs'
 
@@ -14,10 +15,10 @@ const Grid = styled(StyledGrid)`
     gap: 1rem;
 `
 
-const initialSearchState={ rut:'', isPaid: 'unPaid', startDate: '', endDate: '' }
+const initialSearchState={ rut:'', isPaid: 0, startDate: '', endDate: '' }
 
 function FormXCobrar() {
-
+    const { getDataWhereSearchCollection } = useDBContext();
     const [search, setSearch] = useState(initialSearchState);
 
     const handleDateErrors = (dates) => {
@@ -25,22 +26,24 @@ function FormXCobrar() {
     };
 
     const handleDateChange = (dates) => {
-        console.log(dates)
         setSearch({ ...search, startDate: dates.startDate, endDate: dates.endDate });
     };
 
     const handleChange = (event) => {
         const { name, value } = event.target;
-        setSearch({ ...search, [name]: value.replace(/[^\w\s]/gi, '') });
+        setSearch({ ...search, [name]: value });
         console.log(value)
     };
 
-    const handleBlur = (values) => {
-         setSearch({ ...search, rut: values.target.value });
+    const handleChangeRut = (event) => {
+        const { name, value } = event.target;
+        setSearch({ ...search, [name]: [value.slice(0, -1), '-', value.slice(-1, value.length+1)].join('') });
     };
 
-    const handleSearch =(values) => {
-        console.log(values)
+    const handleSearch =() => {
+        const { rut, isPaid } = search;
+        const where = [{Column:"Rutcliente", Data: rut }, {Column:"status", Data: isPaid}];
+        getDataWhereSearchCollection('xcobrar', where)
     }
 
     return (
@@ -53,8 +56,8 @@ function FormXCobrar() {
                                 name='rut'
                                 label='Rut'
                                 defaultValue={initialSearchState.rut}
-                                handleChange={handleChange}
-                                handleBlur={handleBlur}
+                                handleChange={handleChangeRut}
+                                handleBlur={handleChangeRut}
                             />
                             <Select
                                 name='isPaid'
@@ -62,8 +65,8 @@ function FormXCobrar() {
                                 inputProps={{ 'aria-label': 'Without label' }}
                                 defaultValue={initialSearchState.isPaid}
                             >
-                                <MenuItem value='unPaid'>Sin Pagar</MenuItem>
-                                <MenuItem value='paid'>Pagado</MenuItem>
+                                <MenuItem value={0}>Sin Pagar</MenuItem>
+                                <MenuItem value={1}>Pagado</MenuItem>
                             </Select>
                             <Divider />
                             <DateRangePicker

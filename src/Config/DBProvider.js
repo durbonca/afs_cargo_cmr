@@ -298,18 +298,19 @@ export const DBProvider = ({children}) => {
     * Return (Object)
     */
     const getDataWhereSearchCollection = (collection, where) => {
-        return new Promise((resolve, reject) => {
-            setState((prevState) => ({ ...prevState, isLoading: true }));
-            const DataRef = db.collection(collection).where(where.Column, "==", Number(where.Data));
+        console.log(where)
+        /* return new Promise((resolve, reject) => {
+            // setState((prevState) => ({ ...prevState, isLoading: true }));
+            const DataRef = db.collection(collection).where(where.Column, "==", Number(where));
             DataRef.onSnapshot(snapshot => {
                 let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
                 data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
-                setState((prevState) => ({ ...prevState, isLoading: false }));
+                // setState((prevState) => ({ ...prevState, isLoading: false }));
                 resolve(data)
             },(error) => {
                 reject(error)
             });
-        })
+        }) */
     }
 
      const getDataById = async (collection, id) => {
