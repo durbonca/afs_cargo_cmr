@@ -26,7 +26,7 @@ export const RcvVenta = ()=>{
         { field: 'Folio', headerName: 'Folio', width: 110, headerAlign: 'center', align: 'right', editable: true },
         { field: 'FechaDocto', headerName: 'Fecha Docto', type: 'date', headerAlign: 'center', align: 'right', width: 160, editable: false },
         { field: 'Montototal', headerName: 'Monto total', width: 150, align: 'right', editable: true },
-        { field: 'NCEoNDEsobreFactDeCompra', headerName: 'NCE/NDE', width: 150, align: 'right', editable: true }
+        { field: 'NCEoNDEsobreFactdeCompra', headerName: 'NCE/NDE', width: 150, align: 'right', editable: true }
     ];
 
     function CustomLoadingOverlay() {
@@ -57,10 +57,10 @@ export const RcvVenta = ()=>{
         // construct object from editRowsModel
         const model = editRowsModel[id];
         const data = Object.assign({}, ...Object.keys(model).map( key => {return ({[key]: model[key].value})}))
-        !data.NCEoNDEsobreFactDeCompra ? data.NCEoNDEsobreFactDeCompra = 0 : null;
-        console.log(data)
+        !data.NCEoNDEsobreFactdeCompra ? data.NCEoNDEsobreFactdeCompra = "" : null;
         if (data) {
-            updateDataCollection('XCobrarSCV', id, data)
+            console.log(id, data)
+            updateDataCollection('XCobrarCSV', id, data)
         }else{
             console.error('no se puede actualizar una entrada vacia')
         }

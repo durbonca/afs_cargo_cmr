@@ -150,11 +150,11 @@ export const DBProvider = ({children}) => {
     }
 
     const updateDataCollection = (collection, id, data) => {
-        console.log(id)
+        console.log(collection)
         return new Promise((resolve, reject) => {
             db.collection(collection).doc(id).update(data).then(() => {
-                console.log('actualizado')
                 resolve(true)
+                console.log('actualizado')
             }).catch(error => {
                 reject(error)
             })
