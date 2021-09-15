@@ -214,11 +214,14 @@ export const DBProvider = ({children}) => {
         })
     }
 
-    const delDataCollection = (id) => {
+    const delDataCollection = (Colletion, id) => {
+        setState((prevState) => ({ ...prevState, isLoading: true }));
         return new Promise((resolve, reject) => {
-            db.collection(DataCollectionNow).doc(id).delete().then(() => {
+            db.collection(Colletion).doc(id).delete().then(() => {
+                setState((prevState) => ({ ...prevState, isLoading: false }));
                 resolve(true)
             }).catch(error => {
+                setState((prevState) => ({ ...prevState, isLoading: false }));
                 reject(error)
             })
         })
