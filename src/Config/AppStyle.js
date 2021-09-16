@@ -67,6 +67,7 @@ export const appStyles = makeStyles((theme) => ({
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
+        borderRadius: "10px",
         // filter: "brightness(0.5) blur(5px)",
         backgroundColor: "A9E4D7",
     },

@@ -6,12 +6,13 @@ import { appStyles } from '../../Config/AppStyle';
 
 const Login = () => {
     const { login, emailChange, passwordChange } = useDBContext();
-    const { cardLogin, containerLogin, headerLogin, btnLogin } = appStyles();
+    const { cardLogin, containerLogin, headerLogin, btnLogin, backgroundPic } = appStyles();
 
     return (
         <Page>
             <Container fixed 
-                style={{display: 'flex', justifyContent: 'center', alignItems: "center", height: "100vh"}}>
+                className={backgroundPic}
+                style={{display: 'flex', justifyContent: 'center', alignItems: "center", height: "60vh", minWidth: "100%"}}>
                 <form onSubmit={login} className={containerLogin}>
                     <Card className={cardLogin}>
                         <CardHeader className={headerLogin} title="Login CMR - AFS Cargo" />
