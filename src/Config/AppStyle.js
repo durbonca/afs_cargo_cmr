@@ -62,6 +62,14 @@ export const appStyles = makeStyles((theme) => ({
         textAlign: 'center',
         color: theme.palette.text.secondary,
     },
+    backgroundPic: {
+        backgroundImage: "url(../assets/background.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+        // filter: "brightness(0.5) blur(5px)",
+        backgroundColor: "A9E4D7",
+    },
     cardLogin: {
       marginTop: theme.spacing(10)
     },

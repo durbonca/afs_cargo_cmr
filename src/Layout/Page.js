@@ -3,11 +3,11 @@ import { Grid, Paper } from "@material-ui/core"
 import { appStyles } from "../Config/AppStyle";
 
 const Page = ({children}) => {
-    const { paper } = appStyles();
+    const { paper, backgroundPic } = appStyles();
     return (
         <Grid container >
             <Grid item xs={12}>
-                <Paper className={paper}>
+                <Paper className={paper, backgroundPic}>
                     {children}
                 </Paper>
             </Grid>
