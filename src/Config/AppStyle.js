@@ -147,7 +147,8 @@ export const appStyles = makeStyles((theme) => ({
     },
     btnCarga: {
         fontFamily: 'Arial',
-        fontSize: '12px',
+        fontSize: '14px',
+        padding: '6px 16px',
         color: 'white',
         margin: '0 5px',
     },

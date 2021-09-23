@@ -17,7 +17,7 @@ const StyledForm = styled(Form)`
     align-items: center;
     `;
 
-export function Formulario () {
+export function FormCreate ({handleCreate, handleCancel}) {
     return (
         <Container fixed>
             <h1>Formulario</h1>
@@ -25,16 +25,12 @@ export function Formulario () {
                 initialValues={invoiceSchema}
                 validationSchema={invoiceValidation}
                 onSubmit={(values, { setSubmitting }) => {
-                    console.log(values)
-                    setTimeout(() => {
-                    alert(JSON.stringify(values, null, 2));
+                    handleCreate(values);
                     setSubmitting(false);
-                    }, 400);
                 }}
             >
-            {({isValid, dirty, initialValues, handleChange, handleBlur, values}) => (
+            {({isValid, dirty, initialValues, handleChange, handleBlur}) => (
                 <StyledForm>
-                    {console.log(values)}
                     <Item width="200">
                         <Field
                             label="Rut"
@@ -50,25 +46,25 @@ export function Formulario () {
                     <Item width="200">
                         <Field
                             label="Razón Social"
-                            name="companyName"
+                            name="RazonSocial"
                             handleChange={handleChange}
                             handleBlur={handleBlur}
                             as={TextField}
                             />
-                        <ErrorMessage component={Error} name="companyName" />
+                        <ErrorMessage component={Error} name="RazonSocial" />
                     </Item>
                     <Item width="200">
                         <Field
                             label="Folio"
-                            name="invoiceNumber"
+                            name="Folio"
                             handleChange={handleChange}
                             handleBlur={handleBlur}
                             type="text"
                             as={TextField}
                             />
-                        <ErrorMessage component={Error} name="invoiceNumber" />
+                        <ErrorMessage component={Error} name="Folio" />
                     </Item>
-                    <Item width="200">
+                    {/* <Item width="200">
                         <Field
                             label="Fecha Documento"
                             name="documentDate"
@@ -76,8 +72,8 @@ export function Formulario () {
                             as={Date}
                             />
                         <ErrorMessage component={Error} name="documentDate" />
-                    </Item>
-                    <Item width="200">
+                    </Item> */}
+                    {/* <Item width="200">
                         <Field
                             label="correo"
                             name="email"
@@ -86,28 +82,36 @@ export function Formulario () {
                             as={TextField}
                             />
                         <ErrorMessage component={Error} name="email" />
-                    </Item>
+                    </Item> */}
                     <Item width="200">
                         <Field
                             label="Monto Total"
-                            name="totalAmount"
+                            name="Montototal"
                             handleChange={handleChange}
                             handleBlur={handleBlur}
                             as={TextField}
                             />
-                        <ErrorMessage component={Error} name="totalAmount" />
+                        <ErrorMessage component={Error} name="Montototal" />
                     </Item>
                     <Item width="425">
                         <Field
                             label="NCE o NDE sobre Fact. de Compra"
-                            name="NCE"
+                            name="NCEoNDEsobreFactdeCompra"
                             handleChange={handleChange}
                             handleBlur={handleBlur}
                             as={TextField}
                             />
-                        <ErrorMessage component={Error} name="NCE" />
+                        <ErrorMessage component={Error} name="NCEoNDEsobreFactdeCompra" />
                     </Item>
-
+                    <Item width="200">
+                        <Button
+                            onClick={() => handleCancel()}
+                            style={{ marginTop: "40px" }}
+                            variant="contained"
+                            color="secondary">
+                        Cancelar
+                        </Button>
+                    </Item>
                     <Item width="200">
                         <Button
                             disabled={!isValid || !dirty}

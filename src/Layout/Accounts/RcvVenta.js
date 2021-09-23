@@ -6,16 +6,32 @@ import { Typography, Button } from '@material-ui/core';
 import CSVImport from '../../components/CSVImport/CSVImport';
 import Item from '../../components/Item';
 import DeleteIcon from '@material-ui/icons/DeleteOutlined';
+import AddIcon from '@material-ui/icons/AddOutlined';
 import { Modal } from '@material-ui/core'
+import styled from 'styled-components';
+import { FormCreate } from '../Form/FormCreate';
 
 // import EditIcon from '@material-ui/icons/Edit';
 // import SaveIcon from '@material-ui/icons/Save';
 // import CancelIcon from '@material-ui/icons/Close';
 
+const ModalContainer = styled.div`
+    position: absolute;
+    width: 40%;
+    padding: 2rem;
+    border: 2px solid #000;
+    background-color: #fff;
+    box-shadow: 0px 0px 10px #000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+`;
+
 export const RcvVenta = ()=>{
-    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, setState, isLoading } = useDBContext();
+    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, setState, isLoading, /* putDataCollection */ } = useDBContext();
     const [ editRowsModel, setEditRowsModel ] = React.useState({});
-    const [ openModal, setOpenModal] = React.useState(false);
+    const [ openModalDelete, setOpenModalDelete] = React.useState(false);
+    const [ openModalCreate, setOpenModalCreate ] = React.useState(false);
     const [ editRows, setEditRows ] = React.useState([]);
 
     const handleEditRowsModelChange = React.useCallback((model) => {
@@ -48,11 +64,22 @@ export const RcvVenta = ()=>{
             </Item>
             <Item>
                 <Button
+                    startIcon={<AddIcon/>}
+                    disabled={openModalCreate || isLoading}
+                    color='primary'
+                    variant='contained'
+                    onClick={()=>{setOpenModalCreate(true);}}
+                >
+                        Crear
+                </Button>
+            </Item>
+            <Item>
+                <Button
                     startIcon={<DeleteIcon/>}
-                    disabled={!editRows.length}
+                    disabled={!editRows.length || isLoading}
                     color='secondary'
                     variant='contained'
-                    onClick={()=>{setOpenModal(true);}}
+                    onClick={()=>{setOpenModalDelete(true);}}
                 >
                         Borrar
                 </Button>
@@ -76,7 +103,15 @@ export const RcvVenta = ()=>{
     }
 
     const handleCloseModal = () => {
-        setOpenModal(false);
+        setOpenModalDelete(false);
+        setOpenModalCreate(false);
+    }
+
+    const handleCreate = async (data) => {
+        const dataFormated = { ...data, status: 0 };
+        console.log(dataFormated);
+        // await putDataCollection('XCobrarCSV', dataFormated)
+        handleCloseModal();
     }
 
     const handleDelete = async () => {
@@ -84,7 +119,7 @@ export const RcvVenta = ()=>{
             await delDataCollection('XCobrarCSV', row)
         })
         setEditRows([]);
-        setOpenModal(false);
+        handleCloseModal();
     }
 
     useEffect(() => {
@@ -96,20 +131,11 @@ export const RcvVenta = ()=>{
     return  (
         <>
             <Modal
-                open={openModal}
+                name='delete'
+                open={openModalDelete}
                 onClose={handleCloseModal}
             >
-                <div style={{
-                        position: 'absolute',
-                        width: '40%',
-                        padding: '2rem',
-                        border: '2px solid #000',
-                        backgroundColor: '#fff',
-                        boxShadow: '0px 0px 10px #000',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)'
-                        }} >
+                <ModalContainer>
                     <p style={{textAlign:'center', marginButton:'1.5rem' }}>
                         Desea borrar las {editRows.length} facturas?
                     </p>
@@ -127,7 +153,15 @@ export const RcvVenta = ()=>{
                                 onClick={() => handleDelete()}>Borrar</Button>
                         </Item>
                     </div>
-                </div>
+                </ModalContainer>
+            </Modal>
+            <Modal
+                name='create'
+                open={openModalCreate}
+                onClose={handleCloseModal}
+                ><ModalContainer>
+                    <FormCreate handleCreate={handleCreate} handleCancel={handleCloseModal} />
+                </ModalContainer>
             </Modal>
             <Typography style={{margin:'2rem'}} variant="h4" component="h1" color="textSecondary">Datos Cargados Rcv Venta</Typography>
             <div style={{ height: 'auto', width: '100%' }}>
