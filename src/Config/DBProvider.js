@@ -9,7 +9,6 @@ export const DBProvider = ({children}) => {
     const history = useHistory();
     const auth = firebase.auth();
     const db = firebase.firestore();
-    //console.log('inicializando...')
 
     const [state, setState] = useState({
 
@@ -22,8 +21,11 @@ export const DBProvider = ({children}) => {
         drawerOpen: false,
         subProfile: null,
 
-        //tablegrid
+        //DataSets Modulos
         DataSet:[],
+        DataSetXCobrar:[],
+        DataSetClientes:[],
+
         Columns:[],
         ShowColumns: [],
         showIdCell: false,
@@ -38,7 +40,8 @@ export const DBProvider = ({children}) => {
 
     const { email,password,
             drawerOpen, subProfile,
-            DataSet, Columns,showIdCell, showbtnAdd, editRow, openDialog, idRowSelected,
+            DataSet, DataSetXCobrar, DataSetClientes, Columns,
+            showIdCell, showbtnAdd, editRow, openDialog, idRowSelected,
             ShowBtnCSV, isLoading, ShowColumns, DataCollectionNow
         } = state;
 
@@ -72,11 +75,9 @@ export const DBProvider = ({children}) => {
     useEffect(() => {
         firebase.auth().onAuthStateChanged(user=>{
             if (user) {
-               //console.log("logieee")
                 window.sessionStorage.setItem('user', JSON.stringify(user));
                 setIsAuth(true)
             } else {
-                //console.log("no estoy login")
                 window.sessionStorage.removeItem('user');
                 setIsAuth(false)
             }
@@ -89,12 +90,9 @@ export const DBProvider = ({children}) => {
 
     const login = (e)  => {
         e.preventDefault();
-        //console.log('login');
         if(email && password){
             auth.signInWithEmailAndPassword(email, password)
                 .then(() => {
-                    //console.log("Haciendo Login...");
-                    //console.log(res);
                     if(isMountedRef.current){
                         setIsAuth(true)
                         history.push("/Home");
@@ -108,7 +106,6 @@ export const DBProvider = ({children}) => {
 
     const logout = (e) => {
         e.preventDefault();
-        //console.log("logout")
         auth.signOut();
         window.sessionStorage.removeItem('user');
         setIsAuth(false);
@@ -131,10 +128,6 @@ export const DBProvider = ({children}) => {
                 "html": message.html
             };
 
-
-            console.log(headersList)
-            console.log(contentMails)
-
             fetch("http://localhost:5001/sendEmail", {
                 method: "POST",
                 body: JSON.stringify(contentMails),
@@ -149,12 +142,28 @@ export const DBProvider = ({children}) => {
         })
     }
 
+    const getColecctions = () => {
+        return new Promise((resolve) => {
+             resolve(['Clientes','XCobrarCSV'])
+        });
+    }
+
+    const existDataCollection = (collection, objectExist) => {
+        return new Promise((resolve, reject) => {
+            getDataCollection(collection).then(async (data) => {
+                await ifExist(data, objectExist).then(exist => {
+                    resolve(exist)
+                })
+            }).catch((error)=> {
+                reject(error)
+            })
+        })
+    }
+
     const updateDataCollection = (collection, id, data) => {
-        console.log(collection)
         return new Promise((resolve, reject) => {
             db.collection(collection).doc(id).update(data).then(() => {
                 resolve(true)
-                console.log('actualizado')
             }).catch(error => {
                 reject(error)
             })
@@ -171,42 +180,28 @@ export const DBProvider = ({children}) => {
         })
     }
 
-    const getDataWhereCliente = (where) => {
-        return new Promise((resolve, reject) => {
-            const DataRef = db.collection('Clientes').where(where.Column, "==", Number(where.Data));
-            DataRef.onSnapshot(snapshot => {
-                let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}));
-                !!data && resolve(true);
-            },() => {
-                reject(false)
-            });
-        })
-    }
-
-    const putDataCliente = (d) => {
-        return new Promise((resolve, reject) => {
-            db.collection('Clientes').add(d).then(() => {
-                resolve(true)
-            }).catch(error => {
-                reject(error)
-            })
-        })
-    }
-
     const putDataCollectionAll = (collection, data) => {
         return new Promise((resolve) => {
             try {
                 data.Data.forEach(async (d, i) => {
                     d.datetime = firebase.firestore.Timestamp.fromDate(new Date())
                     d.status = 0
-                    await getDataWhereCliente({Column: 'Rutcliente', Data: d.Rutcliente})
-                    .then( response => {
-                        if(!response){
-                            putDataCliente({Rutcliente: d.Rutcliente, RazonSocial: d.RazonSocial, email: '', datetime: d.datetime})
+                    await existDataCollection('Clientes',{'Rutcliente':d.Rutcliente})
+                    .then( async existe => {
+                        if(! existe){
+                             await putDataCollection('Clientes', {Rutcliente: d.Rutcliente, RazonSocial: d.RazonSocial, email: '', datetime: d.datetime})
                         }
-                    } )
-                    await putDataCollection(collection, d)
-                    if (data.CountData - 1 == i) resolve(true)
+                    })
+                    await existDataCollection(collection,{'Folio': d.Folio})
+                    .then(async existe => {
+                        if(! existe){
+                            await putDataCollection(collection, d)
+                        }
+                    })
+
+                    if (data.CountData - 1 == i) {
+                        resolve(true)
+                    }
                 }, {})
             } catch (e) {
                 console.log(e)
@@ -227,15 +222,6 @@ export const DBProvider = ({children}) => {
         })
     }
 
-    // const setDataCollection = (collection) => {
-    //     db.collection(collection).doc(id).update({
-    //         Cliente: 'Nuevo',
-    //         Rut: '1234567890-0',
-    //         Monto: 0,
-    //         datetime: firebase.firestore.FieldValue.serverTimestamp()
-    //     });
-    // }
-
 
     useEffect(() => {
         handleColumns(DataSet)
@@ -243,7 +229,6 @@ export const DBProvider = ({children}) => {
     },[DataSet])
 
     const handleColumns= () => {
-        //console.log('handleColumns')
         if(ShowColumns.length > 0){
             const ShowCols = ShowColumns.map(doc => doc.replace(/ /g, ""))
             setState((prevState) => ({ ...prevState, Columns: ShowCols }));
@@ -259,29 +244,6 @@ export const DBProvider = ({children}) => {
         }
     }
 
-    const handleDataGridColumns= () => {
-        //const columns = []
-        //if(ShowColumns.length > 0){
-            //console.log('show columns')
-            const ShowCols = ShowColumns.map(doc => doc.replace(/ /g, "").replace(/./g, ""))
-            ShowCols.map(doc => {
-                console.log(doc)
-            })
-
-            //setState((prevState) => ({ ...prevState, Columns: ShowCols }));
-        // }else{
-        //     //console.log('dataset columns')
-        //     if(DataSet.length > 0){
-        //         let cols = Object.keys(DataSet[0]);
-        //         if(!showIdCell){
-        //             cols = cols.filter(c => c.toLowerCase() !== 'id')
-        //         }
-        //         const ShowCols = cols.map(doc => doc.replace(/ /g, ""))
-        //         setState((prevState) => ({ ...prevState, Columns: ShowCols }));
-        //     }
-        // }
-    }
-
     const getDataCollection = (collection) => {
         return new Promise((resolve, reject) => {
             setState((prevState) => ({ ...prevState, isLoading: true }));
@@ -289,7 +251,6 @@ export const DBProvider = ({children}) => {
             DataRef.onSnapshot(snapshot => {
                 let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
                 data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
-                setState((prevState) => ({...prevState, DataSet: data }))
                 setState((prevState) => ({ ...prevState, isLoading: false }));
                 resolve(data)
             },(error) => {
@@ -298,12 +259,6 @@ export const DBProvider = ({children}) => {
         });
     }
 
-    /*
-    * Function: getDataWhereCollection: Obtiene La informacion  de todos los campos con clusula where
-    * Colletion (String) : La Coleccion de la base de Datos
-    * Where (Object) : {Column:"String", Data: "String"}
-    * Return (Object)
-    */
     const getDataWhereCollection = (collection, where) => {
         return new Promise((resolve, reject) => {
             setState((prevState) => ({ ...prevState, isLoading: true }));
@@ -311,7 +266,6 @@ export const DBProvider = ({children}) => {
             DataRef.onSnapshot(snapshot => {
                 let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
                 data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
-                setState((prevState) => ({...prevState, DataSet: data }))
                 setState((prevState) => ({ ...prevState, isLoading: false }));
                 resolve(data)
             },(error) => {
@@ -320,42 +274,62 @@ export const DBProvider = ({children}) => {
         })
     }
 
-     /*
-    * Function: getDataWhereCollection: Obtiene La informacion  de todos los campos con clusula where
-    * Colletion (String) : La Coleccion de la base de Datos
-    * Where (Object) : {Column:"String", Data: "String"}
-    * Return (Object)
-    */
-    const getDataWhereSearchCollection = (collection, where) => {
-        console.log(where)
-        /* return new Promise((resolve, reject) => {
-            // setState((prevState) => ({ ...prevState, isLoading: true }));
-            const DataRef = db.collection(collection).where(where.Column, "==", Number(where));
+    const getDataWhereSearchCollection = (collection, arraywhere) => {
+        setState((prevState) => ({ ...prevState, isLoading: true }));
+        return new Promise((resolve, reject) => {
+            const DataRef = db.collection(collection)
             DataRef.onSnapshot(snapshot => {
                 let data = snapshot.docs.map(doc => ({id: doc.id, ...doc.data()}))
-                data.forEach(d => {d.datetime = d.datetime.toDate().toDateString()})
-                // setState((prevState) => ({ ...prevState, isLoading: false }));
+                data.forEach(d => {
+                    if(d.datetime){
+                        d.datetime = Date.parse(d.datetime.toDate().toDateString())
+                    }
+                })
+                data = orderBy(data,['datetime']);
+                for (const w of arraywhere) {
+                    if(w.Column =="status"){
+                        data = where(data, {"status": w.Data})
+                    }
+                    if(w.Column =="Rutcliente" && w.Data != ''){
+                        data = where(data, {"Rutcliente": w.Data})
+                    }
+
+                    if(w.Column =="startDate"){
+                        data = greaterThan(data,"datetime", w.Data)
+                    }
+
+                    if(w.Column =="endDate"){
+                        data = smallerThan(data,"datetime", w.Data)
+                    }
+                }
+                setState((prevState) => ({...prevState, DataSetXCobrar: data }))
+                setState((prevState) => ({ ...prevState, isLoading: false }));
                 resolve(data)
             },(error) => {
                 reject(error)
             });
-        }) */
+        });
     }
 
-     const getDataById = async (collection, id) => {
+    const getDataById = async (collection, id) => {
         return new Promise((resolve, reject) => {
-            console.log({collection,id})
             const DocRef = db.collection(collection).doc(id);
             DocRef.get().then((doc) => {
                 if (doc.exists) {
                     resolve(doc.data());
+                    console.log("existe")
                 } else {
                     resolve(null);
+                    console.log("no existe")
                 }
             }).catch((error) => {
                 reject(error);
             })
         })
+    }
+
+    const orderBy = (ArrayOrigin, arrayField) =>{
+        return _.sortBy(ArrayOrigin, arrayField)
     }
 
     const removeDataDuplicates = (ArrayOrigin, field ) => {
@@ -375,6 +349,35 @@ export const DBProvider = ({children}) => {
         return new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'CLP' }).format(number);
     }
 
+    const where = (ArrayOrigin, objectWhere) => {
+        return _.filter(ArrayOrigin, objectWhere)
+    }
+
+    const greaterThan = (ArrayOrigin, field, value) => {
+        return _.filter(ArrayOrigin, (item) => {
+            return _.gte(item[field], value)
+        })
+    }
+
+    const smallerThan = (ArrayOrigin, field, value) => {
+        return _.filter(ArrayOrigin, (item) => {
+            return _.lte(item[field], value)
+        })
+    }
+
+    const between = (ArrayOrigin, field, value1, value2) => {
+        return _.filter(ArrayOrigin, (item) => {
+            return _.gte(item[field], value1) && _.lte(item[field], value2)
+        })
+    }
+
+    const ifExist = (ArrayOrigin, objectWhere) => {
+        return new Promise((resolve) => {
+            resolve(typeof _.find(ArrayOrigin, objectWhere) !== "undefined")? true:false;
+        })
+    }
+
+
     const value = useMemo(() => {
         return {
             //user
@@ -392,9 +395,13 @@ export const DBProvider = ({children}) => {
             handlesubProfileOpen,
             handlesubProfileClose,
 
-            //tableGrid
+            //DataSets
             DataSet,
+            DataSetXCobrar,
+            DataSetClientes,
             Columns,
+            setState,
+
             showIdCell,
             showbtnAdd,
             editRow,
@@ -420,15 +427,22 @@ export const DBProvider = ({children}) => {
             setDataCollectionNow,
             getDataWhereCollection,
             getDataById,
-            handleDataGridColumns,
             getDataWhereSearchCollection,
+            existDataCollection,
+            getColecctions,
 
             //Functions
             removeDataDuplicates,
             groupByData,
             sumByField,
             SendMail,
-            formatNumber
+            formatNumber,
+            smallerThan,
+            greaterThan,
+            between,
+            orderBy,
+            ifExist,
+            where
         }
         // eslint-disable-next-line
     },[ isAuth,email, password,

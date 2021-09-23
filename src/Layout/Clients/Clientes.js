@@ -6,7 +6,7 @@ import { Typography } from '@material-ui/core';
 import Item from '../../components/Item';
 
 export const Clientes = ()=>{
-    const { getDataCollection, updateDataCollection, isLoading  } = useDBContext();
+    const { getDataCollection, updateDataCollection, setState, isLoading  } = useDBContext();
     const [ dataRowsBody, setdataRowsBody ] = useState([])
     const [ editRowsModel, setEditRowsModel ] = useState({});
 
@@ -43,11 +43,9 @@ export const Clientes = ()=>{
     }
 
     const commitChanges = ( id ) => {
-        // construct object from editRowsModel
         const model = editRowsModel[id];
         const data = Object.assign({}, ...Object.keys(model).map( key => {return ({[key]: model[key].value})}))
         if (data) {
-            console.log(id, data)
             updateDataCollection('Clientes', id, data)
         }else{
             console.error('no se puede actualizar una entrada vacia')
@@ -56,9 +54,8 @@ export const Clientes = ()=>{
 
     useEffect(() => {
         getDataCollection('Clientes').then((data) => {
-            // let datafilter = removeDataDuplicates(data,"RazonSocial");
-            // console.log(datafilter)
             setdataRowsBody(data)
+            setState((prevState) => ({...prevState, DataSetClientes: data }))
         })
     },[])
 

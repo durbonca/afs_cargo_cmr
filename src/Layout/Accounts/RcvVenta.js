@@ -13,9 +13,9 @@ import { Modal } from '@material-ui/core'
 // import CancelIcon from '@material-ui/icons/Close';
 
 export const RcvVenta = ()=>{
-    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, isLoading } = useDBContext();
+    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, setState, isLoading } = useDBContext();
     const [ editRowsModel, setEditRowsModel ] = React.useState({});
-    const [openModal, setOpenModal] = React.useState(false);
+    const [ openModal, setOpenModal] = React.useState(false);
     const [ editRows, setEditRows ] = React.useState([]);
 
     const handleEditRowsModelChange = React.useCallback((model) => {
@@ -40,8 +40,6 @@ export const RcvVenta = ()=>{
             </GridOverlay>
         );
     }
-    
-console.log(editRows)
     function Toolbar() {
         return (
           <GridToolbarContainer style={{ flexDirection: 'row-reverse'}}>
@@ -49,9 +47,9 @@ console.log(editRows)
                 <CSVImport />
             </Item>
             <Item>
-                <Button 
-                    startIcon={<DeleteIcon/>} 
-                    disabled={!editRows.length} 
+                <Button
+                    startIcon={<DeleteIcon/>}
+                    disabled={!editRows.length}
                     color='secondary'
                     variant='contained'
                     onClick={()=>{setOpenModal(true);}}
@@ -67,12 +65,10 @@ console.log(editRows)
       }
 
     const commitChanges = ( id ) => {
-        // construct object from editRowsModel
         const model = editRowsModel[id];
         const data = Object.assign({}, ...Object.keys(model).map( key => {return ({[key]: model[key].value})}))
         !data.NCEoNDEsobreFactdeCompra ? data.NCEoNDEsobreFactdeCompra = "" : null;
         if (data) {
-            console.log(id, data)
             updateDataCollection('XCobrarCSV', id, data)
         }else{
             console.error('no se puede actualizar una entrada vacia')
@@ -83,7 +79,7 @@ console.log(editRows)
         setOpenModal(false);
     }
 
-    const handleDelete = async () => { 
+    const handleDelete = async () => {
         await editRows.map( async (row) => {
             await delDataCollection('XCobrarCSV', row)
         })
@@ -92,7 +88,9 @@ console.log(editRows)
     }
 
     useEffect(() => {
-        getDataCollection('XCobrarCSV')
+        getDataCollection('XCobrarCSV').then((data)=> {
+            setState((prevState) => ({...prevState, DataSet: data }))
+        })
     },[])
 
     return  (
@@ -102,14 +100,14 @@ console.log(editRows)
                 onClose={handleCloseModal}
             >
                 <div style={{
-                        position: 'absolute', 
+                        position: 'absolute',
                         width: '40%',
                         padding: '2rem',
                         border: '2px solid #000',
                         backgroundColor: '#fff',
-                        boxShadow: '0px 0px 10px #000', 
-                        top: '50%', 
-                        left: '50%', 
+                        boxShadow: '0px 0px 10px #000',
+                        top: '50%',
+                        left: '50%',
                         transform: 'translate(-50%, -50%)'
                         }} >
                     <p style={{textAlign:'center', marginButton:'1.5rem' }}>
@@ -117,13 +115,13 @@ console.log(editRows)
                     </p>
                     <div style={{display:'flex', justifyContent:'space-around'}}>
                         <Item>
-                            <Button 
+                            <Button
                                 variant='contained'
                                 color='inherit'
                                 onClick={() => handleCloseModal()}>Cancelar</Button>
                         </Item>
                         <Item>
-                            <Button 
+                            <Button
                                 variant='contained'
                                 color='secondary'
                                 onClick={() => handleDelete()}>Borrar</Button>

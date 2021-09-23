@@ -46,7 +46,7 @@ const TableHead = ({cliente}) => {
 
 const TableSubCliente = ({Dataset}) => {
     const [ Total, setTotal] = useState(0)
-    const { sumByField, getDataById, SendMail,formatNumber } = useDBContext();
+    const { sumByField, getDataById, SendMail, formatNumber } = useDBContext();
 
     useEffect(() => {
         setTotal(sumByField(Dataset,'Montototal'))
@@ -87,7 +87,7 @@ const TableSubCliente = ({Dataset}) => {
                                             '<table width="80%" style="border:solid 1px #0073cb;border-radius:4px;padding:8px;font-size:16px;line-height:20px;font-weight:300;border-spacing:0 2px">'+
                                                 '<tbody>'+
                                                     '<tr>'+
-                                                        '<td width="50%" align="left" style="text-align:right;padding:8px 15px">Factura Número</td>'+
+                                                        '<td width="50%" align="left" style="text-align:right;padding:8px 15px">Factura Numero</td>'+
                                                         '<td width="50%" align="left" style="padding:8px 15px">'+doc.Folio+'</td>'+
                                                     '</tr>'+
                                                     '<tr style="background-color:#ebebec">'+
@@ -137,7 +137,7 @@ const TableSubCliente = ({Dataset}) => {
                                                 '<tbody>'+
                                                     '<tr>'+
                                                         '<td align="center" style="background:#fff;display:inline-block;line-height:220%;color:#546e7a;font-weight:200" valign="middle" width="100%">'+
-                                                            'Contáctanos +56 9<font style="letter-spacing:-1px;color:#fff">.</font> 577<font style="letter-spacing:-1px;color:#fff">.</font> 1118'+
+                                                            'Contactanos +56 9<font style="letter-spacing:-1px;color:#fff">.</font> 577<font style="letter-spacing:-1px;color:#fff">.</font> 1118'+
                                                         '</td>'+
                                                     '</tr>'+
                                                     '<tr><td height="20"></td></tr>'+
@@ -214,24 +214,22 @@ const Loading = () => {
 }
 
 const TableClients = () => {
-    const { getDataWhereCollection, removeDataDuplicates, groupByData, isLoading } = useDBContext();
+    const { removeDataDuplicates, groupByData, DataSetXCobrar, isLoading } = useDBContext();
     const [ colheader, setColHeader ] = useState([])
     const [ dataRowsBody, setdataRowsBody ] = useState([])
 
     const getDataClients = () => {
-        getDataWhereCollection("XCobrarCSV",{Column:"status",Data:"0"}).then((data) => {
-            let datafilter = removeDataDuplicates(data,"RazonSocial");
-            setColHeader(datafilter)
-            let dataByGroup = groupByData(data, "Rutcliente")
-            setdataRowsBody(dataByGroup)
-        });
+        let datafilter = removeDataDuplicates(DataSetXCobrar,"RazonSocial");
+        setColHeader(datafilter)
+        let dataByGroup = groupByData(DataSetXCobrar, "Rutcliente")
+        setdataRowsBody(dataByGroup)
     }
 
 
 
     useEffect(() => {
         getDataClients()
-    },[])
+    },[DataSetXCobrar])
 
     return (
             (colheader.length > 0)

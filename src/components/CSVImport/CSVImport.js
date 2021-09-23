@@ -15,7 +15,7 @@ const CSVImport = ({
 			_columns = ['Rut cliente','Razon Social', 'Folio', 'Fecha Docto', 'Monto total','NCE o NDE sobre Fact. de Compra']
 	}) => {
 	const { CSVImport, csvInput, btnCarga, lblCarga } = appStyles();
-	const { putDataCollectionAll } = useDBContext();
+	const { putDataCollectionAll, getDataCollection, setState } = useDBContext();
 
 	const fileInput = useRef(null)
 
@@ -89,6 +89,9 @@ const CSVImport = ({
 					Swal.fire({
 						title: 'Todos los Datos han guardados Satisfactoriamente!',
 						icon:"success"
+					})
+					getDataCollection('XCobrarCSV').then((data)=> {
+						setState((prevState) => ({...prevState, DataSet: data }))
 					})
 				}
 				if (result.isDismissed) {
