@@ -4,7 +4,6 @@ import { Container, Box, Grid as StyledGrid, Button, Select, MenuItem } from '@m
 import Divider from '@material-ui/core/Divider';
 import SearchIcon from '@material-ui/icons/Search';
 import MailIcon from '@material-ui/icons/Mail';
-import MailOutlineIcon from '@material-ui/icons/MailOutline';
 import { useDBContext } from '../../Config/DBProvider';
 
 import { RutField, DateRangePicker } from '../../components/inputs'
@@ -14,7 +13,6 @@ import styled from 'styled-components'
 const Grid = styled(StyledGrid)`
     gap: 1rem;
 `
-
 const initialSearchState={ rut:'', isPaid: 0, startDate: '', endDate: '' }
 
 function FormXCobrar() {
@@ -32,18 +30,26 @@ function FormXCobrar() {
     const handleChange = (event) => {
         const { name, value } = event.target;
         setSearch({ ...search, [name]: value });
-        console.log(value)
     };
 
     const handleChangeRut = (event) => {
         const { name, value } = event.target;
-        setSearch({ ...search, [name]: [value.slice(0, -1), '-', value.slice(-1, value.length+1)].join('') });
+        if(value){
+            setSearch({ ...search, [name]: [value.slice(0, -1), '-', value.slice(-1, value.length+1)].join('') });
+        }else{
+            setSearch({ ...search, [name]: ''});
+        }
     };
 
     const handleSearch =() => {
-        const { rut, isPaid } = search;
-        const where = [{Column:"Rutcliente", Data: rut }, {Column:"status", Data: isPaid}];
-        getDataWhereSearchCollection('xcobrar', where)
+        const { rut, isPaid, startDate, endDate } = search;
+        const where = [
+            {Column:"Rutcliente", Data: rut },
+            {Column:"status", Data: isPaid},
+            {Column:"startDate", Data: startDate},
+            {Column:"endDate", Data: endDate}
+        ];
+        getDataWhereSearchCollection('XCobrarCSV', where);
     }
 
     return (
@@ -85,13 +91,6 @@ function FormXCobrar() {
                             <Divider />
                             ENVIOS MASIVOS
                             <Divider />
-                            <Button
-                                type="button"
-                                color='secondary'
-                                variant='contained'
-                                startIcon={<MailOutlineIcon />}>
-                            Mail por Factura
-                            </Button>
                             <Button
                                 type="button"
                                 color='secondary'

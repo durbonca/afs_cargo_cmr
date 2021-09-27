@@ -10,10 +10,10 @@ const messages = {
 export const invoiceValidation = Yup.object({
     rut: Yup.string().required(messages.required)
     .test('check-rut', messages.rut, (value) => idFormat.checkFormat(value)),
-    companyName: Yup.string().required(messages.required),
-    invoiceNumber: Yup.string().required(messages.required),
-    email: Yup.string().email(messages.email),
+    RazonSocial: Yup.string().required(messages.required),
+    Folio: Yup.string().required(messages.required),
+    // email: Yup.string().email(messages.email),
     // documentDate: Yup.date().required(messages.required),
-    totalAmount: Yup.string().required(messages.required),
-    NCE: Yup.string(),
+    Montototal: Yup.string().required(messages.required),
+    NCEoNDEsobreFactdeCompra: Yup.string(),
 })

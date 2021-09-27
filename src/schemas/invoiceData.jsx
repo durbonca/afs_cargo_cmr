@@ -1,9 +1,9 @@
 export const invoiceSchema = {
     rut: '',
-    companyName: '',
-    invoiceNumber: '',
-    documentDate: '',
-    email: '',
-    totalAmount: '',
-    NCE: '',
+    RazonSocial: '',
+    Folio: '',
+    // documentDate: '',
+    // email: '',
+    Montototal: '',
+    NCEoNDEsobreFactdeCompra: '',
 }

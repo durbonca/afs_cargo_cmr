@@ -33,7 +33,7 @@ const GroupFieldsContainer = styled.div`
 // const defaultButtonStyle = { backgroundColor: 'white', color: '#0070D2', borderColor: 'rgba(0, 0, 0, 0.23)' };
 
 export default function DateRangePicker({ onChange, onSubmit, disableFuture, disablePast, handleErrors }) {
-  // const today = new Date();
+  const today = new Date();
   // const last7Days = add(new Date(), { days: -7 });
 
   const defaultDateRange = { startDate: null, endDate: null };
@@ -62,12 +62,14 @@ export default function DateRangePicker({ onChange, onSubmit, disableFuture, dis
     }
   }; */
 
+
+
   const handleStartDate = (date) => {
-    setDateRange({ ...dateRange, startDate: date });
+    setDateRange({ ...dateRange, startDate: Date.parse(date) });
   };
 
   const handleEndDate = (date) => {
-    setDateRange({ ...dateRange, endDate: date });
+    setDateRange({ ...dateRange, endDate: Date.parse(date) });
   };
 
   const onError = (error) => {
@@ -78,11 +80,16 @@ export default function DateRangePicker({ onChange, onSubmit, disableFuture, dis
 
   useEffect(() => {
     onChange(dateRange);
+
   }, [dateRange]);
 
   useEffect(() => {
       handleErrors(errors);
   }, [errors]);
+
+  useEffect(() => {
+      setDateRange({ startDate: today.setHours(0, 0, 0, 0), endDate: today.setHours(23, 59, 59) });
+  },[]);
 
   const handleDateKeyPress = (event) => {
     const { startDate, endDate } = dateRange;
