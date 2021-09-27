@@ -8,7 +8,7 @@ const messages = {
 }
 
 export const invoiceValidation = Yup.object({
-    rut: Yup.string().required(messages.required)
+    Rutcliente: Yup.string().required(messages.required)
     .test('check-rut', messages.rut, (value) => idFormat.checkFormat(value)),
     RazonSocial: Yup.string().required(messages.required),
     Folio: Yup.string().required(messages.required),

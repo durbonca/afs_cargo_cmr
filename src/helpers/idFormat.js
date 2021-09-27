@@ -16,6 +16,11 @@ const format = (value) => {
   return format;
 };
 
+const formatRut = (value) => {
+  const format = value.substring(0, value.length - 1).concat('-').concat(value.substring(value.length - 1));
+  return format;
+}
+
 const unFormat = (value) => {
   if (!value) return '';
   return String(value).replace(/\./g, '').replace('-', '');
@@ -48,4 +53,4 @@ const checkFormat = (value) => {
   return requestDV === producedDV;
 };
 
-export default { format, unFormat, newCharIsValid, checkFormat };
+export default { format, unFormat, newCharIsValid, checkFormat, formatRut };

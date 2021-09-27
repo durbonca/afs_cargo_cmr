@@ -1,5 +1,5 @@
 export const invoiceSchema = {
-    rut: '',
+    Rutcliente: '',
     RazonSocial: '',
     Folio: '',
     // documentDate: '',

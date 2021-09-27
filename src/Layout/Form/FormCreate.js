@@ -34,14 +34,14 @@ export function FormCreate ({handleCreate, handleCancel}) {
                     <Item width="200">
                         <Field
                             label="Rut"
-                            name="rut"
-                            defaultValue={initialValues.rut}
+                            name="Rutcliente"
+                            defaultValue={initialValues.Rutcliente}
                             handleChange={handleChange}
                             handleBlur={handleBlur}
                             maxLength={12}
                             as={RutField}
                             />
-                        <ErrorMessage component={Error} name="rut" />
+                        <ErrorMessage component={Error} name="Rutcliente" />
                     </Item>
                     <Item width="200">
                         <Field

@@ -10,6 +10,7 @@ import AddIcon from '@material-ui/icons/AddOutlined';
 import { Modal } from '@material-ui/core'
 import styled from 'styled-components';
 import { FormCreate } from '../Form/FormCreate';
+import formatRut from '../../helpers/idFormat';
 
 // import EditIcon from '@material-ui/icons/Edit';
 // import SaveIcon from '@material-ui/icons/Save';
@@ -108,6 +109,7 @@ export const RcvVenta = ()=>{
     }
 
     const handleCreate = async (data) => {
+        data.Rutcliente = formatRut.formatRut(data.Rutcliente);
         const dataFormated = { ...data, status: 0 };
         console.log(dataFormated);
         // await putDataCollection('XCobrarCSV', dataFormated)
