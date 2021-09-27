@@ -4,12 +4,12 @@ import "firebase/auth";
 import "firebase/firestore"
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDLncWkjsC7NkXwJnVGmHeAF4R5sOO2NnM",
-  authDomain: "invoice-cmr.firebaseapp.com",
-  projectId: "invoice-cmr",
-  storageBucket: "invoice-cmr.appspot.com",
-  messagingSenderId: "35349427564",
-  appId: "1:35349427564:web:45dc5ce5903ba6c6482f49"
+  apiKey: process.env.REACT_APP_APIKEY,
+  authDomain: process.env.REACT_APP_AUTHDOMAIN,
+  projectId: process.env.REACT_APP_PROJECTID,
+  storageBucket: process.env.REACT_APP_STORAGEBUCKET,
+  messagingSenderId: process.env.REACT_APP_MESSAGINGSENDERID,
+  appId: process.env.REACT_APP_APPID
 };
 
 firebase.initializeApp(firebaseConfig);
