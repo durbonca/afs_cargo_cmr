@@ -29,7 +29,7 @@ const ModalContainer = styled.div`
 `;
 
 export const RcvVenta = ()=>{
-    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, setState, isLoading, /* putDataCollection */ } = useDBContext();
+    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, setState, isLoading, putDataCollection } = useDBContext();
     const [ editRowsModel, setEditRowsModel ] = React.useState({});
     const [ openModalDelete, setOpenModalDelete] = React.useState(false);
     const [ openModalCreate, setOpenModalCreate ] = React.useState(false);
@@ -111,8 +111,7 @@ export const RcvVenta = ()=>{
     const handleCreate = async (data) => {
         data.Rutcliente = formatRut.formatRut(data.Rutcliente);
         const dataFormated = { ...data, status: 0 };
-        console.log(dataFormated);
-        // await putDataCollection('XCobrarCSV', dataFormated)
+        await putDataCollection('XCobrarCSV', dataFormated)
         handleCloseModal();
     }
 
