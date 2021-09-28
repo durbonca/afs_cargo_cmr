@@ -30,7 +30,7 @@ const ModalContainer = styled.div`
 `;
 
 export const RcvVenta = ()=>{
-    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, setState, isLoading, putDataCollection } = useDBContext();
+    const { getDataCollection, updateDataCollection, delDataCollection, DataSet, setState, isLoading, putDataCollectionSingle } = useDBContext();
     const [ editRowsModel, setEditRowsModel ] = React.useState({});
     const [ openModalDelete, setOpenModalDelete] = React.useState(false);
     const [ openModalCreate, setOpenModalCreate ] = React.useState(false);
@@ -119,7 +119,7 @@ export const RcvVenta = ()=>{
             datetime: new Date(),
             FechaDocto: format(data.FechaDocto, 'dd/MM/yyyy')
         };
-        await putDataCollection('XCobrarCSV', dataFormated)
+        await putDataCollectionSingle('XCobrarCSV', dataFormated)
         handleCloseModal();
     }
 

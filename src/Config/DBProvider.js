@@ -180,6 +180,32 @@ export const DBProvider = ({children}) => {
         })
     }
 
+    const putDataCollectionSingle = async (collection, d) => {
+        
+                await existDataCollection('Clientes',{'Rutcliente':d.Rutcliente}).then( async existe => {
+                    if(! existe){
+                         await putDataCollection('Clientes', {Rutcliente: d.Rutcliente, RazonSocial: d.RazonSocial, email: '', datetime: d.datetime})
+                    }
+                })
+
+                await existDataCollection(collection,{'Folio': d.Folio})
+                .then(async existe => {
+                    if(!existe){
+                        db.collection(collection).add(d).then(() => {
+                            return('resolve')
+                        }).catch(error => {
+                            return(error)
+                        })
+                    } else{
+                        db.collection(collection).update(d).then(() => {
+                            return('resolve')
+                        }).catch(error => {
+                            return(error)
+                        })
+                    }
+                })      
+            }
+
     const putDataCollectionAll = (collection, data) => {
         return new Promise((resolve) => {
             try {
@@ -225,7 +251,6 @@ export const DBProvider = ({children}) => {
 
     useEffect(() => {
         handleColumns(DataSet)
-        // eslint-disable-next-line
     },[DataSet])
 
     const handleColumns= () => {
@@ -422,6 +447,7 @@ export const DBProvider = ({children}) => {
             handleShowBtnCSV,
             updateDataCollection,
             putDataCollection,
+            putDataCollectionSingle,
             putDataCollectionAll,
             delDataCollection,
             setDataCollectionNow,
