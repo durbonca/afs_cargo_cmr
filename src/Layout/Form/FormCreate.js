@@ -2,7 +2,7 @@ import React from 'react';
 import { Container, Button } from '@material-ui/core';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import { invoiceSchema } from '../../schemas/invoiceData';
-import { TextField, /* Date, */ RutField } from '../../components/inputs'
+import { TextField, DatePicker, RutField } from '../../components/inputs'
 import Item from '../../components/Item';
 import Error from '../../components/Error';
 import { invoiceValidation } from '../../helpers/invoice';
@@ -29,7 +29,7 @@ export function FormCreate ({handleCreate, handleCancel}) {
                     setSubmitting(false);
                 }}
             >
-            {({isValid, dirty, initialValues, handleChange, handleBlur}) => (
+            {({isValid, dirty, initialValues, handleChange, handleBlur, setFieldValue, values}) => (
                 <StyledForm>
                     <Item width="200">
                         <Field
@@ -64,25 +64,18 @@ export function FormCreate ({handleCreate, handleCancel}) {
                             />
                         <ErrorMessage component={Error} name="Folio" />
                     </Item>
-                    {/* <Item width="200">
+                    <Item width="200">
                         <Field
                             label="Fecha Documento"
-                            name="documentDate"
-                            type="text"
-                            as={Date}
+                            name="FechaDocto"
+                            value={values.FechaDocto}
+                            handleChange={(value) => {
+                                setFieldValue('FechaDocto', value)
+                              }}
+                            as={DatePicker}
                             />
-                        <ErrorMessage component={Error} name="documentDate" />
-                    </Item> */}
-                    {/* <Item width="200">
-                        <Field
-                            label="correo"
-                            name="email"
-                            handleChange={handleChange}
-                            handleBlur={handleBlur}
-                            as={TextField}
-                            />
-                        <ErrorMessage component={Error} name="email" />
-                    </Item> */}
+                        <ErrorMessage component={Error} name="FechaDocto" />
+                    </Item>
                     <Item width="200">
                         <Field
                             label="Monto Total"

@@ -12,8 +12,7 @@ export const invoiceValidation = Yup.object({
     .test('check-rut', messages.rut, (value) => idFormat.checkFormat(value)),
     RazonSocial: Yup.string().required(messages.required),
     Folio: Yup.string().required(messages.required),
-    // email: Yup.string().email(messages.email),
-    // documentDate: Yup.date().required(messages.required),
+    FechaDocto: Yup.date().required(messages.required),
     Montototal: Yup.string().required(messages.required),
     NCEoNDEsobreFactdeCompra: Yup.string(),
 })

@@ -11,6 +11,7 @@ import { Modal } from '@material-ui/core'
 import styled from 'styled-components';
 import { FormCreate } from '../Form/FormCreate';
 import formatRut from '../../helpers/idFormat';
+import format from 'date-fns/format'
 
 // import EditIcon from '@material-ui/icons/Edit';
 // import SaveIcon from '@material-ui/icons/Save';
@@ -110,7 +111,14 @@ export const RcvVenta = ()=>{
 
     const handleCreate = async (data) => {
         data.Rutcliente = formatRut.formatRut(data.Rutcliente);
-        const dataFormated = { ...data, status: 0 };
+        const dataFormated = { 
+            ...data, 
+            status: 0, 
+            NCEoNDEsobreFactdeCompra: 
+            data.NCEoNDEsobreFactdeCompra || "", 
+            datetime: new Date(),
+            FechaDocto: format(data.FechaDocto, 'dd/MM/yyyy')
+        };
         await putDataCollection('XCobrarCSV', dataFormated)
         handleCloseModal();
     }

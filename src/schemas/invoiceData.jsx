@@ -2,8 +2,7 @@ export const invoiceSchema = {
     Rutcliente: '',
     RazonSocial: '',
     Folio: '',
-    // documentDate: '',
-    // email: '',
+    FechaDocto: new Date(),
     Montototal: '',
     NCEoNDEsobreFactdeCompra: '',
 }

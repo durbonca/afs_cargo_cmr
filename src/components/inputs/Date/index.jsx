@@ -13,11 +13,9 @@ export default function DatePicker({
   maxDate,
   maxDateMessage,
   minDateMessage,
-  notShowDate,
 }) {
   return (
     <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
-      {!notShowDate ? (
         <KeyboardDatePicker
           name={name}
           label={label}
@@ -28,7 +26,7 @@ export default function DatePicker({
           maxDate={maxDate}
           maxDateMessage={maxDateMessage}
           minDateMessage={minDateMessage}
-          invalidDateMessage="Fecha inválida"
+          invalidDateMessage="Fecha inválida / Requerida"
           okLabel="Seleccionar"
           cancelLabel="Cancelar"
           inputVariant="outlined"
@@ -37,39 +35,16 @@ export default function DatePicker({
             'aria-label': 'change date',
           }}
         />
-      ) : (
-        <KeyboardDatePicker
-          name={name}
-          label={label}
-          format="MM/yyyy"
-          value={value}
-          onChange={handleChange}
-          minDate={minDate}
-          maxDate={maxDate}
-          views={['year', 'month']}
-          maxDateMessage="Fecha inválida"
-          minDateMessage="Fecha inválida"
-          invalidDateMessage="Fecha inválida"
-          okLabel="Seleccionar"
-          cancelLabel="Cancelar"
-          inputVariant="outlined"
-          size="small"
-          KeyboardButtonProps={{
-            'aria-label': 'change date',
-          }}
-        />
-      )}
     </MuiPickersUtilsProvider>
   );
 }
 DatePicker.defaultProps = {
-  notShowDate: false,
   maxDateMessage: 'Fecha inválida',
   minDateMessage: 'Fecha inválida',
 };
 
 DatePicker.propTypes = {
-  notShowDate: PropTypes.bool,
+
   maxDateMessage: PropTypes.string,
   minDateMessage: PropTypes.string,
 };
